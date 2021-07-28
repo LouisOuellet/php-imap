@@ -56,16 +56,16 @@ $IMAP->get()->messages; // An array containing all messages
 ```
 Handling messages:
 ```PHP
-$IMAP->get()->messages[0]->ID; // ID of the message
-$IMAP->get()->messages[0]->UID; // UID of the message
-$IMAP->get()->messages[0]->Header; // Complete header information
-$IMAP->get()->messages[0]->From; // From email address
-$IMAP->get()->messages[0]->Subject->Full; // Subject of the message
-$IMAP->get()->messages[0]->Subject->PLAIN; // Original subject
-$IMAP->get()->messages[0]->Body->Meta; // Message structure
-$IMAP->get()->messages[0]->Body->Content; // Message body (HTML if present otherwise plain text)
-$IMAP->get()->messages[0]->Body->Unquoted; // Message body without quote
-$IMAP->get()->messages[0]->Attachments; // Message attachments stored in an array
+end($IMAP->get()->messages)->ID; // ID of the message
+end($IMAP->get()->messages)->UID; // UID of the message
+end($IMAP->get()->messages)->Header; // Complete header information
+end($IMAP->get()->messages)->From; // From email address
+end($IMAP->get()->messages)->Subject->Full; // Subject of the message
+end($IMAP->get()->messages)->Subject->PLAIN; // Original subject
+end($IMAP->get()->messages)->Body->Meta; // Message structure
+end($IMAP->get()->messages)->Body->Content; // Message body (HTML if present otherwise plain text)
+end($IMAP->get()->messages)->Body->Unquoted; // Message body without quote
+end($IMAP->get()->messages)->Attachments; // Message attachments stored in an array
 ```
 
 ## settings.json

@@ -13,4 +13,5 @@ $IMAP = new apiIMAP($settings['imap']['host'],$settings['imap']['port'],$setting
 if($IMAP->isConnected()){
   // Retrieve INBOX
   $results = $IMAP->get();
+  echo end($results->messages)->Body->Content;
 } else { echo $IMAP->Status; }

@@ -91,10 +91,9 @@ class apiIMAP{
 					} else {
 						$msg->Body->Unquoted = "";
 						foreach(explode("\n",$msg->Body->Content) as $line){
-							if($line[0] != '>'){ $msg->Body->Unquoted .= $line; }
+							if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line; }
 						}
 					}
-					$return->messages[$msg->ID] = $msg;
 					// Handling Attachments
 					$msg->Attachments = new stdClass();
 					$msg->Attachments->Files = [];
@@ -128,6 +127,7 @@ class apiIMAP{
 							}
 						}
 					}
+					$return->messages[$msg->ID] = $msg;
 					// Resetting Flag
 					if(isset($opt["new"]) && is_bool($opt["new"]) && $opt["new"]){ imap_clearflag_full($IMAP,$id, "\\Seen"); }
 				}
@@ -135,9 +135,7 @@ class apiIMAP{
 				imap_close($IMAP);
 				// Return
 				return $return;
-			} else {
-				return end(imap_errors());
-			}
+			} else { return end(imap_errors()); }
 		} else { return $this->Status; }
 	}
 
