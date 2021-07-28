@@ -8,7 +8,7 @@ This class provides functions to manage an IMAP mailbox more easily.
 
 ## IMAP Class
 ### Initialization
-```PHP
+`PHP
 <?php
 // Import Library
 require_once dirname(__FILE__) . '/src/lib/imap.php';
@@ -26,7 +26,18 @@ if(is_bool($IMAP->Status) && $IMAP->Status){
   // Print Connection Error
   echo $IMAP->Status."\n";
 }
-```
+`
+### Parameters
+ - `$IMAP->Status` : Stores the status of the connection. Or error in the event of a failure.
+ - `$IMAP->Folders` : Stores the list of folders available.
+### Methods
+To make it easier, we will assume you have already initialized the class in `$IMAP`.
+#### READ
+This method simply set the read flag to a message.
+#### DELETE
+This method simply delete a message.
+#### GET
+This method retrieves a list of email stored in a folder. The list is pretty extensive as it contains everything in the email and header. Including file attachments, unquoted bodies and stripped subjects.
 
 ## example.php
 This file contains a working example.
@@ -34,11 +45,11 @@ This file contains a working example.
 ## settings.json
 ### Create settings
 To create the file simply use your favorite editor and copy/paste the example.
-```BASH
+`BASH
 nano settings.json
-```
+`
 ### Example
-```JSON
+`JSON
 {
     "imap":{
         "host": "imap.domain.com",
@@ -49,4 +60,4 @@ nano settings.json
         "password": "password"
     }
 }
-```
+`
