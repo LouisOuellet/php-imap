@@ -14,5 +14,5 @@ if($IMAP->isConnected()){
   // Retrieve INBOX
   $results = $IMAP->get();
   // Output the body of the last message
-  echo end($results->messages)->Body->Content;
+  echo end($results->messages)->Body->Unquoted;
 } else { echo $IMAP->Status; }
