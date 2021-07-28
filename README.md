@@ -3,8 +3,7 @@ This class provides functions to manage an IMAP mailbox more easily.
 
 ## Content
  - IMAP Class : Located here src/lib/imap.php
- - example.php : Example PHP script that uses the IMAP class.
- - settings.json : A JSON file that stores all scripts settings
+ - settings.json : A JSON file that stores the IMAP server settings
 
 ## IMAP Class
 ### Initialization
@@ -51,9 +50,6 @@ Finally optionally you can specify if you want to retrieve only new email like t
 $IMAP->get(['new'=>true]);
 $IMAP->get("Sent",['new'=>true]);
 ```
-
-## example.php
-This file contains a working example.
 
 ## settings.json
 ### Create settings
