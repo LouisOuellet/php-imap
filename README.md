@@ -50,6 +50,23 @@ Finally optionally you can specify if you want to retrieve only new email like t
 $IMAP->get(['new'=>true]);
 $IMAP->get("Sent",['new'=>true]);
 ```
+To retreive messages:
+```PHP
+$IMAP->get()->messages; // An array containing all messages
+```
+Handling messages:
+```PHP
+$IMAP->get()->messages[0]->ID; // ID of the message
+$IMAP->get()->messages[0]->UID; // UID of the message
+$IMAP->get()->messages[0]->Header; // Complete header information
+$IMAP->get()->messages[0]->From; // From email address
+$IMAP->get()->messages[0]->Subject->Full; // Subject of the message
+$IMAP->get()->messages[0]->Subject->PLAIN; // Original subject
+$IMAP->get()->messages[0]->Body->Meta; // Message structure
+$IMAP->get()->messages[0]->Body->Content; // Message body (HTML if present otherwise plain text)
+$IMAP->get()->messages[0]->Body->Unquoted; // Message body without quote
+$IMAP->get()->messages[0]->Attachments; // Message attachments stored in an array
+```
 
 ## settings.json
 ### Create settings
