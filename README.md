@@ -18,25 +18,26 @@ $settings=json_decode(file_get_contents(dirname(__FILE__) . '/settings.json'),tr
 
 // Init Library
 $IMAP = new apiIMAP($settings['imap']['host'],$settings['imap']['port'],$settings['imap']['encryption'],$settings['imap']['username'],$settings['imap']['password'],$settings['imap']['isSelfSigned']);
-
-// Check Connection Status
-if(is_bool($IMAP->Status) && $IMAP->Status){
-  // Connection is Successfull
-} else {
-  // Print Connection Error
-  echo $IMAP->Status."\n";
-}
 ```
 ### Parameters
  - ```$IMAP->Status``` : Stores the status of the connection. Or error in the event of a failure.
- - ```$IMAP->Folders``` : Stores the list of folders available.
+ - ```$IMAP->Folders``` : Stores the list of folders available in an array.
 ### Methods
 To make it easier, we will assume you have already initialized the class in ```$IMAP```.
-#### READ
+#### read
 This method simply set the read flag to a message.
-#### DELETE
+#### delete
 This method simply delete a message.
-#### GET
+### isConnected
+This method is used to test if a connection was established to the IMAP server.
+```PHP
+if($IMAP->isConnected()){
+  // Connection is Successful
+} else {
+  echo $IMAP->Status;
+}
+```
+#### get
 This method retrieves a list of email stored in a folder. The list is pretty extensive as it contains everything in the email and header. Including file attachments, unquoted bodies and stripped subjects.
 ```PHP
 $IMAP->get(); // will fetch all emails from the INBOX by default

@@ -46,7 +46,7 @@ class apiIMAP{
 
 	public function get($folder = "INBOX", $opt = []){
 		if(is_array($folder)){ $opt = $folder;$folder = "INBOX"; }
-		if(is_bool($this->Status) && $this->Status){
+		if($this->isConnected()){
 			// Init Return
 			$return = new stdClass();
 			// Connect to Folder
@@ -139,6 +139,10 @@ class apiIMAP{
 				return end(imap_errors());
 			}
 		} else { return $this->Status; }
+	}
+
+	public function isConnected(){
+		if(is_bool($this->Status) && $this->Status){ return true; } else { return false; }
 	}
 
 	public function read($uid){
