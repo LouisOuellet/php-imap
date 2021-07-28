@@ -39,7 +39,7 @@ This method simply delete a message.
 #### GET
 This method retrieves a list of email stored in a folder. The list is pretty extensive as it contains everything in the email and header. Including file attachments, unquoted bodies and stripped subjects.
 ```PHP
-$IMAP->get(); // Fetches all emails in INBOX
+$IMAP->get(); // will fetch all emails from the INBOX by default
 ```
 If you want to look in a specific folder:
 ```PHP
@@ -47,6 +47,7 @@ $IMAP->get("Sent");
 ```
 Finally optionally you can specify if you want to retrieve only new email like this:
 ```PHP
+$IMAP->get(['new'=>true]);
 $IMAP->get("Sent",['new'=>true]);
 ```
 

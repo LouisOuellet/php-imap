@@ -45,6 +45,7 @@ class apiIMAP{
 	}
 
 	public function get($folder = "INBOX", $opt = []){
+		if(is_array($folder)){ $opt = $folder;$folder = "INBOX"; }
 		if(is_bool($this->Status) && $this->Status){
 			// Init Return
 			$return = new stdClass();
