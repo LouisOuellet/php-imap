@@ -27,7 +27,7 @@ To make it easier, we will assume you have already initialized the class in ```$
 This method simply set the read flag to a message.
 #### delete
 This method simply delete a message.
-### isConnected
+#### isConnected
 This method is used to test if a connection was established to the IMAP server.
 ```PHP
 if($IMAP->isConnected()){
