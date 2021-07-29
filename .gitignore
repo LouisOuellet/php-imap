@@ -1,9 +1,5 @@
-composer.phar
-.DS_Store
+*composer.phar
 *.DS_Store
-settings.json
 *settings.json
-/tmp/
-/tmp/*
 */tmp/
 */tmp/*
