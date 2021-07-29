@@ -24,6 +24,7 @@ if($IMAP->isConnected()){
     if(isset($msg->Header->in_reply_to)){echo "REPLY-TO: ".$msg->Header->in_reply_to."\n";}
     if(isset($msg->Header->references)){echo "REFERENCES: ".$msg->Header->references."\n";}
     if(isset($msg->Subject->PLAIN)){echo "SUBJECT: ".$msg->Subject->PLAIN."\n";}
+    if(isset($msg->Attachments->Count)){echo "ATTACHMENTS: ".$msg->Attachments->Count."\n";}
     // Output all the attachements details
     foreach($msg->Attachments->Files as $file){
       echo "-----------------------------------------------------------------------------------------\n";
