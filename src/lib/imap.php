@@ -63,6 +63,7 @@ class apiIMAP{
 					$ids = imap_search($IMAP,"UNSEEN");
 				} else { $ids = imap_search($IMAP,"ALL"); }
 				foreach($ids as $id){
+					// Handling Meta Data
 					$msg = imap_headerinfo($IMAP,$id);
 					$msg->ID = $id;
 					$msg->UID = imap_uid($IMAP,$id);
