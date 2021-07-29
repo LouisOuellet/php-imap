@@ -13,10 +13,6 @@ $IMAP = new apiIMAP($settings['imap']['host'],$settings['imap']['port'],$setting
 if($IMAP->isConnected()){
   // Retrieve INBOX
   $results = $IMAP->get();
-  // Output the body of the last message
-  echo "#########################################################################################\n";
-  echo end($results->messages)->Body->Unquoted;
-  echo "#########################################################################################\n";
   // Create a storage area for attachments
   $store = dirname(__FILE__) . '/tmp/';
   if(!is_dir($store)){mkdir($store);}
@@ -32,6 +28,10 @@ if($IMAP->isConnected()){
     if(isset($msg->Header->references)){echo "REFERENCES: ".$msg->Header->references."\n";}
     if(isset($msg->Subject->PLAIN)){echo "SUBJECT: ".$msg->Subject->PLAIN."\n";}
     if(isset($msg->Attachments->Count)){echo "ATTACHMENTS: ".$msg->Attachments->Count."\n";}
+    // Output the body of the message
+    echo "#########################################################################################\n";
+    echo $msg->Body->Unquoted;
+    echo "#########################################################################################\n";
     // Output all the attachements details
     foreach($msg->Attachments->Files as $file){
       echo "-----------------------------------------------------------------------------------------\n";
