@@ -32,9 +32,7 @@ This method is used to test if a connection was established to the IMAP server.
 ```PHP
 if($IMAP->isConnected()){
   // Connection is Successful
-} else {
-  echo $IMAP->Status;
-}
+} else { echo $IMAP->Status; }
 ```
 #### get
 This method retrieves a list of email stored in a folder. The list is pretty extensive as it contains everything in the email and header. Including file attachments, unquoted bodies and stripped subjects.
