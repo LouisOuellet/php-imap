@@ -2,7 +2,7 @@
 
 // Import Librairies
 
-class apiIMAP{
+class PHPIMAP{
 
 	protected $Host;
 	protected $Port;
@@ -62,95 +62,98 @@ class apiIMAP{
 				if(isset($opt["new"]) && is_bool($opt["new"]) && $opt["new"]){
 					$ids = imap_search($IMAP,"UNSEEN");
 				} else { $ids = imap_search($IMAP,"ALL"); }
-				foreach($ids as $id){
-					// Handling Meta Data
-					$msg = imap_headerinfo($IMAP,$id);
-					$msg->ID = $id;
-					$msg->UID = imap_uid($IMAP,$id);
-					$msg->Header = imap_header($IMAP,$id);
-					$msg->From = $msg->Header->from[0]->mailbox . "@" . $msg->Header->from[0]->host;
-					$msg->Sender = $msg->Header->sender[0]->mailbox . "@" . $msg->Header->sender[0]->host;
-					$msg->To = [];
-					foreach($msg->Header->to as $to){ array_push($msg->To,$to->mailbox . "@" . $to->host); }
-					$msg->CC = [];
-					if(isset($msg->Header->cc)){
-						foreach($msg->Header->cc as $cc){ array_push($msg->CC,$cc->mailbox . "@" . $cc->host); }
-					}
-					$msg->BCC = [];
-					if(isset($msg->Header->bcc)){
-						foreach($msg->Header->bcc as $bcc){ array_push($msg->BCC,$bcc->mailbox . "@" . $bcc->host); }
-					}
-					// Handling Subject Line
-					$sub = $msg->Subject;
-					$msg->Subject = new stdClass();
-					$msg->Subject->Full = $sub;
-					$msg->Subject->PLAIN = trim(preg_replace("/Re\:|re\:|RE\:|Fwd\:|fwd\:|FWD\:/i", '', $sub),' ');
-					// Handling Body
-					$msg->Body = new stdClass();
-					$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
-					$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
-					if($this->isHTML($msg->Body->Content)){
-						$html = new DOMDocument();
-						$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
-						$this->removeElementsByTagName('script', $html);
-						$this->removeElementsByTagName('style', $html);
-						$this->removeElementsByTagName('head', $html);
-						$msg->Body->Content = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
-						$html = new DOMDocument();
-						$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
-						$this->removeElementsByTagName('blockquote', $html);
-						$msg->Body->Unquoted = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
-					} else {
-						$msg->Body->Unquoted = "";
-						foreach(explode("\n",$msg->Body->Content) as $line){
-							if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line; }
+				$return->messages = [];
+				if(!empty($ids)){
+					foreach($ids as $id){
+						// Handling Meta Data
+						$msg = imap_headerinfo($IMAP,$id);
+						$msg->ID = $id;
+						$msg->UID = imap_uid($IMAP,$id);
+						$msg->Header = imap_header($IMAP,$id);
+						$msg->From = $msg->Header->from[0]->mailbox . "@" . $msg->Header->from[0]->host;
+						$msg->Sender = $msg->Header->sender[0]->mailbox . "@" . $msg->Header->sender[0]->host;
+						$msg->To = [];
+						foreach($msg->Header->to as $to){ array_push($msg->To,$to->mailbox . "@" . $to->host); }
+						$msg->CC = [];
+						if(isset($msg->Header->cc)){
+							foreach($msg->Header->cc as $cc){ array_push($msg->CC,$cc->mailbox . "@" . $cc->host); }
 						}
-					}
-					// Handling Attachments
-					$msg->Attachments = new stdClass();
-					$msg->Attachments->Files = [];
-					$parts = [];
-					if(isset($msg->Body->Meta->parts) && is_array($msg->Body->Meta->parts) && count($msg->Body->Meta->parts) > 0){
-						foreach($msg->Body->Meta->parts as $part){
-							array_push($parts,$part);
-							if(isset($part->parts) && is_array($part->parts) && count($part->parts) > 0){
-								foreach($part->parts as $subpart){array_push($parts,$subpart);}
+						$msg->BCC = [];
+						if(isset($msg->Header->bcc)){
+							foreach($msg->Header->bcc as $bcc){ array_push($msg->BCC,$bcc->mailbox . "@" . $bcc->host); }
+						}
+						// Handling Subject Line
+						$sub = $msg->Subject;
+						$msg->Subject = new stdClass();
+						$msg->Subject->Full = $sub;
+						$msg->Subject->PLAIN = trim(preg_replace("/Re\:|re\:|RE\:|Fwd\:|fwd\:|FWD\:/i", '', $sub),' ');
+						// Handling Body
+						$msg->Body = new stdClass();
+						$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
+						$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
+						if($this->isHTML($msg->Body->Content)){
+							$html = new DOMDocument();
+							$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
+							$this->removeElementsByTagName('script', $html);
+							$this->removeElementsByTagName('style', $html);
+							$this->removeElementsByTagName('head', $html);
+							$msg->Body->Content = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
+							$html = new DOMDocument();
+							$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
+							$this->removeElementsByTagName('blockquote', $html);
+							$msg->Body->Unquoted = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
+						} else {
+							$msg->Body->Unquoted = "";
+							foreach(explode("\n",$msg->Body->Content) as $line){
+								if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line; }
 							}
 						}
-						$msg->Attachments->Count = 0;
-						foreach($parts as $key => $part){
-							if($part->ifdparameters){
-								foreach($part->dparameters as $object){
-									if(strtolower($object->attribute) == 'filename'){
-										$msg->Attachments->Files[$key]['filename'] = $object->value;
-										$msg->Attachments->Files[$key]['is_attachment'] = true;
-									}
+						// Handling Attachments
+						$msg->Attachments = new stdClass();
+						$msg->Attachments->Files = [];
+						$parts = [];
+						if(isset($msg->Body->Meta->parts) && is_array($msg->Body->Meta->parts) && count($msg->Body->Meta->parts) > 0){
+							foreach($msg->Body->Meta->parts as $part){
+								array_push($parts,$part);
+								if(isset($part->parts) && is_array($part->parts) && count($part->parts) > 0){
+									foreach($part->parts as $subpart){array_push($parts,$subpart);}
 								}
 							}
-							if($part->ifparameters){
-								foreach($part->parameters as $object){
-									if(strtolower($object->attribute) == 'name'){
-										$msg->Attachments->Files[$key]['name'] = $object->value;
-										$msg->Attachments->Files[$key]['is_attachment'] = true;
+							$msg->Attachments->Count = 0;
+							foreach($parts as $key => $part){
+								if($part->ifdparameters){
+									foreach($part->dparameters as $object){
+										if(strtolower($object->attribute) == 'filename'){
+											$msg->Attachments->Files[$key]['filename'] = $object->value;
+											$msg->Attachments->Files[$key]['is_attachment'] = true;
+										}
 									}
 								}
-							}
-							if((isset($msg->Attachments->Files[$key]))&&($msg->Attachments->Files[$key]['is_attachment'])){
-								$msg->Attachments->Count++;
-								$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $key+1);
-								$msg->Attachments->Files[$key]['encoding'] = $part->encoding;
-								if(isset($part->bytes)){$msg->Attachments->Files[$key]['bytes'] = $part->bytes;}
-	              if($part->encoding == 3){
-	                $msg->Attachments->Files[$key]['attachment'] = base64_decode($msg->Attachments->Files[$key]['attachment']);
-	              } elseif($part->encoding == 4){
-	                $msg->Attachments->Files[$key]['attachment'] = quoted_printable_decode($msg->Attachments->Files[$key]['attachment']);
-	              }
+								if($part->ifparameters){
+									foreach($part->parameters as $object){
+										if(strtolower($object->attribute) == 'name'){
+											$msg->Attachments->Files[$key]['name'] = $object->value;
+											$msg->Attachments->Files[$key]['is_attachment'] = true;
+										}
+									}
+								}
+								if((isset($msg->Attachments->Files[$key]))&&($msg->Attachments->Files[$key]['is_attachment'])){
+									$msg->Attachments->Count++;
+									$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $key+1);
+									$msg->Attachments->Files[$key]['encoding'] = $part->encoding;
+									if(isset($part->bytes)){$msg->Attachments->Files[$key]['bytes'] = $part->bytes;}
+		              if($part->encoding == 3){
+		                $msg->Attachments->Files[$key]['attachment'] = base64_decode($msg->Attachments->Files[$key]['attachment']);
+		              } elseif($part->encoding == 4){
+		                $msg->Attachments->Files[$key]['attachment'] = quoted_printable_decode($msg->Attachments->Files[$key]['attachment']);
+		              }
+								}
 							}
 						}
+						$return->messages[$msg->ID] = $msg;
+						// Resetting Flag
+						if(isset($opt["new"]) && is_bool($opt["new"]) && $opt["new"]){ imap_clearflag_full($IMAP,$id, "\\Seen"); }
 					}
-					$return->messages[$msg->ID] = $msg;
-					// Resetting Flag
-					if(isset($opt["new"]) && is_bool($opt["new"]) && $opt["new"]){ imap_clearflag_full($IMAP,$id, "\\Seen"); }
 				}
 				// Close IMAP Connection
 				imap_close($IMAP);
@@ -161,7 +164,7 @@ class apiIMAP{
 	}
 
 	public function isConnected(){
-		if(is_bool($this->Status) && $this->Status){ return true; } else { return false; }
+		return is_bool($this->Status) && $this->Status ? true:false;
 	}
 
 	public function read($uid){
