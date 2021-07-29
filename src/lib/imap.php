@@ -196,7 +196,8 @@ class PHPIMAP{
 			$save = fopen(rtrim($destination,"/") . "/" . $filename, "w+");
 			fwrite($save, $file['attachment']);
 			fclose($save);
-		}
+			return rtrim($destination,"/") . "/" . $filename;
+		} else { return false; }
 	}
 
 	protected function isHTML($string){

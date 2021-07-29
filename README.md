@@ -78,11 +78,11 @@ end(end($IMAP->get()->messages)->Attachments)['attachment']; // content of the a
 end(end($IMAP->get()->messages)->Attachments)['encoding']; // encoding type of the attachment
 ```
 #### saveAttachment
-You can use this method to save your attachment locally.
+You can use this method to save your attachment locally. If file is saved, the method will return the full path of the file.
 ```PHP
 // $IMAP->saveAttachment([ARRAY of File],[Destination Directory])
 foreach(end($IMAP->get()->messages)->Attachments as $file){
-  $IMAP->saveAttachment($file,"tmp/");
+  if($path = $IMAP->saveAttachment($file,"tmp/")){ echo "Saved in ".$path; }
 }
 ```
 

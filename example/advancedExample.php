@@ -40,7 +40,7 @@ if($IMAP->isConnected()){
       if(isset($file['bytes'])){echo "BYTES: ".$file['bytes']."\n";}
       // Create a storage area for message
       if(!is_dir($store.$msg->UID.'/')){mkdir($store.$msg->UID.'/');}
-      $IMAP->saveAttachment($file,$store.$msg->UID.'/');
+      if($path = $IMAP->saveAttachment($file,$store.$msg->UID.'/')){ echo "FILE: ".$path."\n"; }
     }
   }
 } else { echo $IMAP->Status; }

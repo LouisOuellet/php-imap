@@ -27,7 +27,7 @@ if($IMAP->isConnected()){
       // Create a storage area for message
       if(!is_dir($store.$msg->UID.'/')){mkdir($store.$msg->UID.'/');}
       // Save File
-      $IMAP->saveAttachment($file,$store.$msg->UID.'/');
+      if($path = $IMAP->saveAttachment($file,$store.$msg->UID.'/')){ echo "Saved in ".$path; }
     }
   }
 } else { echo $IMAP->Status; }
