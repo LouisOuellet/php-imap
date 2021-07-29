@@ -14,7 +14,7 @@ class PHPIMAP{
 	public $Status;
 	public $Folders = [];
 
-	public function __construct($Host,$Port,$Encryption,$Username,$Password,$isSelfSigned = false){
+	public function __construct($Host,$Port,$Encryption,$Username,$Password,$isSelfSigned = true){
 		// Save Configuration
 		$this->Host = $Host;
 		$this->Port = $Port;
