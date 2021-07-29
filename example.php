@@ -17,6 +17,13 @@ if($IMAP->isConnected()){
   echo "#########################################################################################\n";
   echo end($results->messages)->Body->Unquoted;
   echo "#########################################################################################\n";
+  // Create a storage area for attachments
+  $store = dirname(__FILE__) . '/tmp/';
+  if(!is_dir($store)){mkdir($store);}
+  $store .= 'imap/';
+  if(!is_dir($store)){mkdir($store);}
+  $store .= $settings['imap']['username'].'/';
+  if(!is_dir($store)){mkdir($store);}
   // Output ids and subject of all messages retrieved
   foreach($results->messages as $msg){
     echo "=========================================================================================\n";
@@ -31,6 +38,9 @@ if($IMAP->isConnected()){
       if(isset($file['filename'])){echo "FILENAME: ".$file['filename']."\n";}
       if(isset($file['name'])){echo "NAME: ".$file['name']."\n";}
       if(isset($file['bytes'])){echo "BYTES: ".$file['bytes']."\n";}
+      // Create a storage area for message
+      if(!is_dir($store.$msg->UID.'/')){mkdir($store.$msg->UID.'/');}
+      $IMAP->saveAttachment($file,$store.$msg->UID.'/');
     }
   }
 } else { echo $IMAP->Status; }

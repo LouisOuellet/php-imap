@@ -184,6 +184,18 @@ class apiIMAP{
 		imap_close($IMAP);
 	}
 
+	public function saveAttachment($file,$destination){
+		// Saving Attachment
+		if($file['is_attachment']){
+			$filename = time().".dat";
+			if(isset($file['filename'])){ $filename = $file['filename']; }
+			if(isset($file['name'])){ $filename = $file['name']; }
+			$save = fopen(rtrim($destination,"/") . "/" . $filename, "w+");
+			fwrite($save, $file['attachment']);
+			fclose($save);
+		}
+	}
+
 	protected function isHTML($string){
 	 return $string != strip_tags($string) ? true:false;
 	}

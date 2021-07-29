@@ -71,6 +71,14 @@ end($IMAP->get()->messages)->Body->Content; // Message body (HTML if present oth
 end($IMAP->get()->messages)->Body->Unquoted; // Message body without quote
 end($IMAP->get()->messages)->Attachments; // Message attachments stored in an array
 ```
+#### saveAttachment
+You can use this method to save your attachment locally.
+```PHP
+// $IMAP->saveAttachment([ARRAY of File],[Destination Directory])
+foreach(end($IMAP->get()->messages)->Attachments as $file){
+  $IMAP->saveAttachment($file,"tmp/");
+}
+```
 
 ## settings.json
 ### Create settings
