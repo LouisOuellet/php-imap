@@ -69,6 +69,14 @@ end($IMAP->get()->messages)->Body->Content; // Message body (HTML if present oth
 end($IMAP->get()->messages)->Body->Unquoted; // Message body without quote
 end($IMAP->get()->messages)->Attachments; // Message attachments stored in an array
 ```
+Handling attachments:
+```PHP
+end(end($IMAP->get()->messages)->Attachments)['filename']; // filename of attachment
+end(end($IMAP->get()->messages)->Attachments)['name']; // name of attachment
+end(end($IMAP->get()->messages)->Attachments)['bytes']; // size of attachment in bytes
+end(end($IMAP->get()->messages)->Attachments)['attachment']; // content of the attachment already decoded
+end(end($IMAP->get()->messages)->Attachments)['encoding']; // encoding type of the attachment
+```
 #### saveAttachment
 You can use this method to save your attachment locally.
 ```PHP
