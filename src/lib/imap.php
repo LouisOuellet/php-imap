@@ -109,9 +109,16 @@ class apiIMAP{
 					// Handling Attachments
 					$msg->Attachments = new stdClass();
 					$msg->Attachments->Files = [];
-					if(isset($msg->Body->Meta->parts) && is_array($msg->Body->Meta->parts)){
-						$msg->Attachments->Count = count($msg->Body->Meta->parts);
-						foreach($msg->Body->Meta->parts as $key => $part){
+					$parts = [];
+					if(isset($msg->Body->Meta->parts) && is_array($msg->Body->Meta->parts) && count($msg->Body->Meta->parts) > 0){
+						foreach($msg->Body->Meta->parts as $part){
+							array_push($parts,$part);
+							if(isset($part->parts) && is_array($part->parts) && count($part->parts) > 0){
+								foreach($part->parts as $subpart){array_push($parts,$subpart);}
+							}
+						}
+						$msg->Attachments->Count = 0;
+						foreach($parts as $key => $part){
 							if($part->ifdparameters){
 								foreach($part->dparameters as $object){
 									if(strtolower($object->attribute) == 'filename'){
@@ -129,8 +136,10 @@ class apiIMAP{
 								}
 							}
 							if((isset($msg->Attachments->Files[$key]))&&($msg->Attachments->Files[$key]['is_attachment'])){
+								$msg->Attachments->Count++;
 								$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $key+1);
 								$msg->Attachments->Files[$key]['encoding'] = $part->encoding;
+								if(isset($part->bytes)){$msg->Attachments->Files[$key]['bytes'] = $part->bytes;}
 	              if($part->encoding == 3){
 	                $msg->Attachments->Files[$key]['attachment'] = base64_decode($msg->Attachments->Files[$key]['attachment']);
 	              } elseif($part->encoding == 4){

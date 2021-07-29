@@ -60,7 +60,10 @@ end($IMAP->get()->messages)->ID; // ID of the message
 end($IMAP->get()->messages)->UID; // UID of the message
 end($IMAP->get()->messages)->Header; // Complete header information
 end($IMAP->get()->messages)->From; // From email address
+end($IMAP->get()->messages)->Sender; // Sender email address
 end($IMAP->get()->messages)->To; // Array of the To addresses
+end($IMAP->get()->messages)->CC; // Array of the CC addresses
+end($IMAP->get()->messages)->BCC; // Array of the BCC addresses
 end($IMAP->get()->messages)->Subject->Full; // Subject of the message
 end($IMAP->get()->messages)->Subject->PLAIN; // Original subject
 end($IMAP->get()->messages)->Body->Meta; // Message structure
