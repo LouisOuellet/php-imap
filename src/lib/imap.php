@@ -69,6 +69,17 @@ class apiIMAP{
 					$msg->UID = imap_uid($IMAP,$id);
 					$msg->Header = imap_header($IMAP,$id);
 					$msg->From = $msg->Header->from[0]->mailbox . "@" . $msg->Header->from[0]->host;
+					$msg->Sender = $msg->Header->sender[0]->mailbox . "@" . $msg->Header->sender[0]->host;
+					$msg->To = [];
+					foreach($msg->Header->to as $to){ array_push($msg->To,$to->mailbox . "@" . $to->host); }
+					$msg->CC = [];
+					if(isset($msg->Header->cc)){
+						foreach($msg->Header->cc as $cc){ array_push($msg->CC,$cc->mailbox . "@" . $cc->host); }
+					}
+					$msg->BCC = [];
+					if(isset($msg->Header->bcc)){
+						foreach($msg->Header->bcc as $bcc){ array_push($msg->BCC,$bcc->mailbox . "@" . $bcc->host); }
+					}
 					// Handling Subject Line
 					$sub = $msg->Subject;
 					$msg->Subject = new stdClass();
