@@ -94,16 +94,38 @@ class PHPIMAP{
 						$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
 						$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
 						if($this->isHTML($msg->Body->Content)){
+							$tidy = new tidy();
+							$htmlBody = $tidy->repairString($msg->Body->Content, array(
+						    'output-xhtml' => true,
+						    'show-body-only' => true,
+							), 'utf8');
 							$html = new DOMDocument();
-							$html->loadHTML($this->convertUTF8(mb_convert_encoding($msg->Body->Content,mb_detect_encoding($msg->Body->Content),"UTF-8")),LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
+							$html->loadHTML($htmlBody);
 							$this->removeElementsByTagName('script', $html);
 							$this->removeElementsByTagName('style', $html);
 							$this->removeElementsByTagName('head', $html);
-							$msg->Body->Content = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
+							$body = $html->getElementsByTagName('body');
+							if( $body && 0<$body->length ){
+							    $body = $body->item(0);
+							    $msg->Body->Content = $html->saveHtml($body);
+							} else {
+								$msg->Body->Content = $html->saveHtml($html);
+							}
+							$msg->Body->Content = preg_replace("/<\\/?body(.|\\s)*?>/",'',$msg->Body->Content);
 							$html = new DOMDocument();
-							$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
+							$html->loadHTML($htmlBody);
+							$this->removeElementsByTagName('script', $html);
+							$this->removeElementsByTagName('style', $html);
+							$this->removeElementsByTagName('head', $html);
 							$this->removeElementsByTagName('blockquote', $html);
-							$msg->Body->Unquoted = str_replace("<html>","",str_replace("</html>","",str_replace("<body>","",str_replace("</body>","",$html->saveHtml()))));
+							$body = $html->getElementsByTagName('body');
+							if( $body && 0<$body->length ){
+							    $body = $body->item(0);
+							    $msg->Body->Unquoted = $html->saveHtml($body);
+							} else {
+								$msg->Body->Unquoted = $html->saveHtml($html);
+							}
+							$msg->Body->Unquoted = preg_replace("/<\\/?body(.|\\s)*?>/",'',$msg->Body->Unquoted);
 						} else {
 							$msg->Body->Unquoted = "";
 							foreach(explode("\n",$msg->Body->Content) as $line){
