@@ -115,14 +115,10 @@ class PHPIMAP{
 						$msg->Attachments->Files = [];
 						$parts = [];
 						if(isset($msg->Body->Meta->parts) && is_array($msg->Body->Meta->parts) && count($msg->Body->Meta->parts) > 0){
-							foreach($msg->Body->Meta->parts as $part){
-								array_push($parts,$part);
-								if(isset($part->parts) && is_array($part->parts) && count($part->parts) > 0){
-									foreach($part->parts as $subpart){array_push($parts,$subpart);}
-								}
-							}
+							$parts = $this->createPartArray($msg->Body->Meta);
 							$msg->Attachments->Count = 0;
-							foreach($parts as $key => $part){
+							foreach($parts as $key => $objects){
+								$part = $objects['part_object'];
 								if($part->ifdparameters){
 									foreach($part->dparameters as $object){
 										if(strtolower($object->attribute) == 'filename'){
@@ -141,7 +137,7 @@ class PHPIMAP{
 								}
 								if((isset($msg->Attachments->Files[$key]))&&($msg->Attachments->Files[$key]['is_attachment'])){
 									$msg->Attachments->Count++;
-									$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $key+1);
+									$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $objects['part_number']);
 									$msg->Attachments->Files[$key]['encoding'] = $part->encoding;
 									if(isset($part->bytes)){$msg->Attachments->Files[$key]['bytes'] = $part->bytes;}
 		              if($part->encoding == 3){
@@ -277,5 +273,29 @@ class PHPIMAP{
 	    $node = $nodeList->item($nodeIdx);
 	    $node->parentNode->removeChild($node);
 	  }
+	}
+
+	protected function createPartArray($structure, $prefix="") {
+    if (sizeof($structure->parts) > 0) {
+      foreach ($structure->parts as $count => $part) { $this->addPart2Array($part, $prefix.($count+1), $part_array); }
+    }else{ $part_array[] = array('part_number' => $prefix.'1', 'part_object' => $obj); }
+   return $part_array;
+	}
+
+	function addPart2Array($obj, $partno, & $part_array) {
+    $part_array[] = array('part_number' => $partno, 'part_object' => $obj);
+    if($obj->type == 2){
+      if(sizeof($obj->parts) > 0){
+        foreach($obj->parts as $count => $part){
+          if (sizeof($part->parts) > 0) {
+            foreach($part->parts as $count2 => $part2){ $this->addPart2Array($part2, $partno.".".($count2+1), $part_array); }
+          }else{ $part_array[] = array('part_number' => $partno.'.'.($count+1), 'part_object' => $obj); }
+        }
+      }else{ $part_array[] = array('part_number' => $prefix.'.1', 'part_object' => $obj); }
+    }else{
+      if(isset($obj->parts) && sizeof($obj->parts) > 0){
+        foreach($obj->parts as $count => $p){ $this->addPart2Array($p, $partno.".".($count+1), $part_array); }
+      }
+    }
 	}
 }

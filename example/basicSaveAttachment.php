@@ -21,7 +21,7 @@ if($IMAP->isConnected()){
     // Output all the attachements details
     foreach($msg->Attachments->Files as $file){
       // Save File
-      if($path = $IMAP->saveAttachment($file,$store)){ echo "Saved in ".$path; }
+      if($path = $IMAP->saveAttachment($file,$store)){ echo "Saved in ".$path."\n"; }
     }
   }
 } else { echo $IMAP->Status; }
