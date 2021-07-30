@@ -73,7 +73,9 @@ class PHPIMAP{
 						$msg->From = $msg->Header->from[0]->mailbox . "@" . $msg->Header->from[0]->host;
 						$msg->Sender = $msg->Header->sender[0]->mailbox . "@" . $msg->Header->sender[0]->host;
 						$msg->To = [];
-						foreach($msg->Header->to as $to){ array_push($msg->To,$to->mailbox . "@" . $to->host); }
+						if(isset($msg->Header->to)){
+							foreach($msg->Header->to as $to){ array_push($msg->To,$to->mailbox . "@" . $to->host); }
+						} else { array_push($msg->To,$this->Username); }
 						$msg->CC = [];
 						if(isset($msg->Header->cc)){
 							foreach($msg->Header->cc as $cc){ array_push($msg->CC,$cc->mailbox . "@" . $cc->host); }
@@ -93,7 +95,7 @@ class PHPIMAP{
 						$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
 						if($this->isHTML($msg->Body->Content)){
 							$html = new DOMDocument();
-							$html->loadHTML($msg->Body->Content,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
+							$html->loadHTML($this->convertUTF8(mb_convert_encoding($msg->Body->Content,mb_detect_encoding($msg->Body->Content),"UTF-8")),LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR | LIBXML_NOWARNING);
 							$this->removeElementsByTagName('script', $html);
 							$this->removeElementsByTagName('style', $html);
 							$this->removeElementsByTagName('head', $html);
@@ -259,6 +261,14 @@ class PHPIMAP{
 	    $len = strpos($string, $end, $ini) - $ini;
 	    return substr($string, $ini, $len);
 		}
+	}
+
+	protected function convertUTF8( $string ) {
+    if(strlen(utf8_decode($string)) == strlen($string)){
+      return iconv("ISO-8859-1", "UTF-8", $string);
+    } else {
+      return $string;
+    }
 	}
 
 	protected function removeElementsByTagName($tagName, $document) {
