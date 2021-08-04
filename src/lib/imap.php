@@ -85,7 +85,8 @@ class PHPIMAP{
 							foreach($msg->Header->bcc as $bcc){ array_push($msg->BCC,$bcc->mailbox . "@" . $bcc->host); }
 						}
 						// Handling Subject Line
-						$sub = $msg->Subject;
+						if(isset($msg->subject)){$sub = $msg->subject;}
+						if(isset($msg->Subject)){$sub = $msg->Subject;}
 						$msg->Subject = new stdClass();
 						$msg->Subject->Full = $sub;
 						$msg->Subject->PLAIN = trim(preg_replace("/Re\:|re\:|RE\:|Fwd\:|fwd\:|FWD\:/i", '', $sub),' ');
@@ -100,7 +101,9 @@ class PHPIMAP{
 						    'show-body-only' => true,
 							), 'utf8');
 							$html = new DOMDocument();
+							libxml_use_internal_errors(true);
 							$html->loadHTML($htmlBody);
+							libxml_use_internal_errors(false);
 							$this->removeElementsByTagName('script', $html);
 							$this->removeElementsByTagName('style', $html);
 							$this->removeElementsByTagName('head', $html);
@@ -113,7 +116,9 @@ class PHPIMAP{
 							}
 							$msg->Body->Content = preg_replace("/<\\/?body(.|\\s)*?>/",'',$msg->Body->Content);
 							$html = new DOMDocument();
+							libxml_use_internal_errors(true);
 							$html->loadHTML($htmlBody);
+							libxml_use_internal_errors(false);
 							$this->removeElementsByTagName('script', $html);
 							$this->removeElementsByTagName('style', $html);
 							$this->removeElementsByTagName('head', $html);
@@ -307,15 +312,15 @@ class PHPIMAP{
 	function addPart2Array($obj, $partno, & $part_array) {
     $part_array[] = array('part_number' => $partno, 'part_object' => $obj);
     if($obj->type == 2){
-      if(sizeof($obj->parts) > 0){
+      if(isset($obj->parts) && is_array($obj->parts) && sizeof($obj->parts) > 0){
         foreach($obj->parts as $count => $part){
-          if (sizeof($part->parts) > 0) {
+          if(isset($part->parts) && isizeof($part->parts) > 0){
             foreach($part->parts as $count2 => $part2){ $this->addPart2Array($part2, $partno.".".($count2+1), $part_array); }
           }else{ $part_array[] = array('part_number' => $partno.'.'.($count+1), 'part_object' => $obj); }
         }
-      }else{ $part_array[] = array('part_number' => $prefix.'.1', 'part_object' => $obj); }
+      }else{ $part_array[] = array('part_number' => $partno, 'part_object' => $obj); }
     }else{
-      if(isset($obj->parts) && sizeof($obj->parts) > 0){
+      if(isset($obj->parts) && is_array($obj->parts) && sizeof($obj->parts) > 0){
         foreach($obj->parts as $count => $p){ $this->addPart2Array($p, $partno.".".($count+1), $part_array); }
       }
     }
