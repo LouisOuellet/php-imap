@@ -15,6 +15,10 @@ class PHPIMAP{
 	public $Folders = [];
 
 	public function __construct($Host,$Port,$Encryption,$Username,$Password,$isSelfSigned = true){
+
+    // Increase PHP memory limit
+    ini_set('memory_limit', '1024M');
+
 		// Save Configuration
 		$this->Host = $Host;
 		$this->Port = $Port;
@@ -314,7 +318,7 @@ class PHPIMAP{
     if($obj->type == 2){
       if(isset($obj->parts) && is_array($obj->parts) && sizeof($obj->parts) > 0){
         foreach($obj->parts as $count => $part){
-          if(isset($part->parts) && isizeof($part->parts) > 0){
+          if(isset($part->parts) && sizeof($part->parts) > 0){
             foreach($part->parts as $count2 => $part2){ $this->addPart2Array($part2, $partno.".".($count2+1), $part_array); }
           }else{ $part_array[] = array('part_number' => $partno.'.'.($count+1), 'part_object' => $obj); }
         }
