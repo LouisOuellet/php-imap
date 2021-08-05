@@ -94,6 +94,11 @@ class PHPIMAP{
 						$msg->Subject = new stdClass();
 						$msg->Subject->Full = $sub;
 						$msg->Subject->PLAIN = trim(preg_replace("/Re\:|re\:|RE\:|Fwd\:|fwd\:|FWD\:/i", '', $sub),' ');
+						$msg->Subject->Meta = [];
+						$meta = str_replace('TR:',' ',str_replace('CCN:',' ',str_replace('CN:',' ',str_replace('OTHER:',' ',str_replace('.',' ',str_replace(',',' ',str_replace('<',' ',str_replace('>',' ',str_replace('[',' ',str_replace(']',' ',str_replace('#',' ',str_replace('_',' ',str_replace('#TN#',' ',$msg->Subject->PLAIN)))))))))))));
+						foreach(explode(' ',$meta) as $string){
+            	if(mb_strlen($string)>=3 && preg_match('~[0-9]+~', $string) && substr($string, 0, 1) !== '=' && substr($string, 0, 1) !== '?'){ array_push($msg->Subject->Meta,$string);}
+            }
 						// Handling Body
 						$msg->Body = new stdClass();
 						$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
