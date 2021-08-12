@@ -91,11 +91,14 @@ class PHPIMAP{
 						// Handling Subject Line
 						if(isset($msg->subject)){$sub = $msg->subject;}
 						if(isset($msg->Subject)){$sub = $msg->Subject;}
+						$sub = imap_utf8($sub);
 						$msg->Subject = new stdClass();
 						$msg->Subject->Full = $sub;
 						$msg->Subject->PLAIN = trim(preg_replace("/Re\:|re\:|RE\:|Fwd\:|fwd\:|FWD\:/i", '', $sub),' ');
 						$msg->Subject->Meta = [];
-						$meta = str_replace('TR:',' ',str_replace('CCN:',' ',str_replace('CN:',' ',str_replace('OTHER:',' ',str_replace('.',' ',str_replace(',',' ',str_replace('<',' ',str_replace('>',' ',str_replace('[',' ',str_replace(']',' ',str_replace('#',' ',str_replace('_',' ',str_replace('#TN#',' ',$msg->Subject->PLAIN)))))))))))));
+						$meta = $msg->Subject->PLAIN;
+						$replace = ['---','--','CID:','CNTR-','PARS-','UTF-8','CCN:','CN:','OTHER:','PO:','REF:','NBR:','INV:','OTHER:','(',')','<','>','{','}','[',']',';','"',"'",'#','_','=','+','.',',','!','?','@','$','%','^','&','*','\\','/','|'];
+				    foreach($replace as $str1){ $meta = str_replace($str1,' ',strtoupper($meta)); }
 						foreach(explode(' ',$meta) as $string){
             	if(mb_strlen($string)>=3 && preg_match('~[0-9]+~', $string) && substr($string, 0, 1) !== '=' && substr($string, 0, 1) !== '?'){ array_push($msg->Subject->Meta,$string);}
             }
@@ -104,11 +107,12 @@ class PHPIMAP{
 						$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
 						$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
 						if($this->isHTML($msg->Body->Content)){
-							$tidy = new tidy();
-							$htmlBody = $tidy->repairString($msg->Body->Content, array(
-						    'output-xhtml' => true,
-						    'show-body-only' => true,
-							), 'utf8');
+							// $tidy = new tidy();
+							// $htmlBody = $tidy->repairString($msg->Body->Content, array(
+						  //   'output-xhtml' => true,
+						  //   'show-body-only' => true,
+							// ), 'utf8');
+							$htmlBody = $this->convertHTMLSymbols($msg->Body->Content);
 							$html = new DOMDocument();
 							libxml_use_internal_errors(true);
 							$html->loadHTML($htmlBody);
@@ -140,12 +144,21 @@ class PHPIMAP{
 								$msg->Body->Unquoted = $html->saveHtml($html);
 							}
 							$msg->Body->Unquoted = preg_replace("/<\\/?body(.|\\s)*?>/",'',$msg->Body->Unquoted);
+							if(strpos($msg->Body->Unquoted, '<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">') !== false){
+								$msg->Body->Unquoted = explode('<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">',$msg->Body->Unquoted)[0]."</div>";
+							}
+							if(strpos($msg->Body->Unquoted, '<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm">') !== false){
+								$msg->Body->Unquoted = explode('<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm">',$msg->Body->Unquoted)[0]."</div>";
+							}
 						} else {
 							$msg->Body->Unquoted = "";
 							foreach(explode("\n",$msg->Body->Content) as $line){
-								if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line; }
+								if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line."<br>"; }
 							}
+							$msg->Body->Content = str_replace("\n","<br>",$msg->Body->Content);
 						}
+						$trims = ["\n","<br>"];
+						foreach($trims as $trim){ $msg->Body->Unquoted = trim($msg->Body->Unquoted,$trim);$msg->Body->Content = trim($msg->Body->Content,$trim); }
 						// Handling Attachments
 						$msg->Attachments = new stdClass();
 						$msg->Attachments->Files = [];
@@ -234,6 +247,17 @@ class PHPIMAP{
 		} else { return false; }
 	}
 
+	protected function convertHTMLSymbols($str_in){
+		$list = get_html_translation_table(HTML_ENTITIES);
+		unset($list['"']);
+		unset($list['<']);
+		unset($list['>']);
+		unset($list['&']);
+		$search = array_keys($list);
+		$values = array_values($list);
+		return str_replace($search, $values, $str_in);
+	}
+
 	protected function isHTML($string){
 	 return $string != strip_tags($string) ? true:false;
 	}
@@ -249,6 +273,7 @@ class PHPIMAP{
 	protected function getBody($imap, $uid){
 	    $body = $this->getPart($imap, $uid, "TEXT/HTML");
 	    if($body == ""){ $body = $this->getPart($imap, $uid, "TEXT/PLAIN"); }
+			$body = imap_utf8($body);
 	    return $body;
 	}
 
