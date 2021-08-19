@@ -220,12 +220,14 @@ class PHPIMAP{
 		error_reporting(0);
 		if(!$IMAP = imap_open($this->Connection, $this->Username, $this->Password)){
 			error_reporting(-1);
-			// Delete Email
-			imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
-			imap_delete($IMAP,$uid,FT_UID);
-			imap_expunge($IMAP);
-			// Close IMAP Connection
-			imap_close($IMAP);
+			if(!is_bool($IMAP)){
+				// Delete Email
+				imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
+				imap_delete($IMAP,$uid,FT_UID);
+				imap_expunge($IMAP);
+				// Close IMAP Connection
+				imap_close($IMAP);
+			}
 		}
 		error_reporting(-1);
 	}
