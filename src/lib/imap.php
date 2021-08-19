@@ -218,18 +218,15 @@ class PHPIMAP{
 	public function delete($uid){
 		// Connect IMAP
 		error_reporting(0);
-		if(!$IMAP = imap_open($this->Connection, $this->Username, $this->Password)){
+		if($IMAP = imap_open($this->Connection, $this->Username, $this->Password)){
 			error_reporting(-1);
-			if(!is_bool($IMAP)){
-				// Delete Email
-				imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
-				imap_delete($IMAP,$uid,FT_UID);
-				imap_expunge($IMAP);
-				// Close IMAP Connection
-				imap_close($IMAP);
-			}
-		}
-		error_reporting(-1);
+			// Delete Email
+			imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
+			imap_delete($IMAP,$uid,FT_UID);
+			imap_expunge($IMAP);
+			// Close IMAP Connection
+			imap_close($IMAP);
+		} else { error_reporting(-1); }
 	}
 
 	public function saveAttachment($file,$destination){
