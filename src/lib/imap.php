@@ -107,11 +107,6 @@ class PHPIMAP{
 						$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
 						$msg->Body->Content = $this->getBody($IMAP,$msg->UID);
 						if($this->isHTML($msg->Body->Content)){
-							// $tidy = new tidy();
-							// $htmlBody = $tidy->repairString($msg->Body->Content, array(
-						  //   'output-xhtml' => true,
-						  //   'show-body-only' => true,
-							// ), 'utf8');
 							$htmlBody = $this->convertHTMLSymbols($msg->Body->Content);
 							$html = new DOMDocument();
 							libxml_use_internal_errors(true);
@@ -144,11 +139,8 @@ class PHPIMAP{
 								$msg->Body->Unquoted = $html->saveHtml($html);
 							}
 							$msg->Body->Unquoted = preg_replace("/<\\/?body(.|\\s)*?>/",'',$msg->Body->Unquoted);
-							if(strpos($msg->Body->Unquoted, '<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">') !== false){
-								$msg->Body->Unquoted = explode('<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in 0in 0in">',$msg->Body->Unquoted)[0]."</div>";
-							}
-							if(strpos($msg->Body->Unquoted, '<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm">') !== false){
-								$msg->Body->Unquoted = explode('<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm">',$msg->Body->Unquoted)[0]."</div>";
+							if(strpos($msg->Body->Unquoted, 'From:') !== false){
+								$msg->Body->Unquoted = explode('From:',$msg->Body->Unquoted)[0];
 							}
 						} else {
 							$msg->Body->Unquoted = "";
@@ -225,13 +217,17 @@ class PHPIMAP{
 
 	public function delete($uid){
 		// Connect IMAP
-		$IMAP = imap_open($this->Connection, $this->Username, $this->Password);
-		// Delete Email
-		imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
-		imap_delete($IMAP,$uid,FT_UID);
-		imap_expunge($IMAP);
-		// Close IMAP Connection
-		imap_close($IMAP);
+		error_reporting(0);
+		if(!$IMAP = imap_open($this->Connection, $this->Username, $this->Password)){
+			error_reporting(-1);
+			// Delete Email
+			imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
+			imap_delete($IMAP,$uid,FT_UID);
+			imap_expunge($IMAP);
+			// Close IMAP Connection
+			imap_close($IMAP);
+		}
+		error_reporting(-1);
 	}
 
 	public function saveAttachment($file,$destination){
