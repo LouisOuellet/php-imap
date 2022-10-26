@@ -31,15 +31,18 @@ Using Composer:
 composer require laswitchtech/php-imap
 ```
 
-### Parameters
- - ```$phpIMAP->Status``` : Stores the status of the connection. Or error in the event of a failure.
- - ```$phpIMAP->Folders``` : Stores the list of folders available in an array.
 ### Methods
 To make it easier, we will assume you have already initialized the class in ```$phpIMAP```.
+
+#### getFolders
+This method simply list the folders available.
+
 #### read
 This method simply set the read flag to a message.
+
 #### delete
 This method simply delete a message.
+
 #### isConnected
 This method is used to test if a connection was established to the IMAP server.
 ```php
@@ -47,6 +50,7 @@ if($phpIMAP->isConnected()){
   // Connection is Successful
 }
 ```
+
 #### get
 This method retrieves a list of email stored in a folder. The list is pretty extensive as it contains everything in the email and header. Including file attachments, unquoted bodies and stripped subjects.
 ```php
@@ -90,6 +94,7 @@ end(end($phpIMAP->get()->messages)->Attachments)['bytes']; // size of attachment
 end(end($phpIMAP->get()->messages)->Attachments)['attachment']; // content of the attachment already decoded
 end(end($phpIMAP->get()->messages)->Attachments)['encoding']; // encoding type of the attachment
 ```
+
 #### saveAttachment
 You can use this method to save your attachment locally. If file is saved, the method will return the full path of the file.
 ```php
