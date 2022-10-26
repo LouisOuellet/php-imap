@@ -159,5 +159,5 @@ if($phpIMAP->isConnected()){
     print_r(end($results->messages)->Meta->References->Formatted);
     echo "\n";
   } else {echo "No Messages!\n";}
-} else { echo $phpIMAP->Status; }
+} else { echo "Connection Error!\n"; }
 ```
