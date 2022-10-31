@@ -107,7 +107,6 @@ foreach(end($phpIMAP->get()->messages)->Attachments as $file){
 ## Example
 
 ```php
-<?php
 
 //Import SMTP class into the global namespace
 //These must be at the top of your script, not inside a function
