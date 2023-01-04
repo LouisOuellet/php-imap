@@ -291,9 +291,9 @@ class phpIMAP{
 		$opt = [];
 		$criteria = "ALL";
 		if(is_object($Options)){ $IMAP = $Options; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_array($Connection)){ $opt = $Connection; }
-		if(is_array($Options)){ $opt = $Options; }
+		elseif(is_array($Options)){ $opt = $Options; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		if(isset($opt['folder'])){ $folder = $opt['folder']; } else { $folder = "INBOX"; }
 		if(isset($opt['format'])){ $format = $opt['format']; } else { $format = false; }
@@ -305,6 +305,7 @@ class phpIMAP{
 			$return->IMAP = $IMAP;
 			// Connect to Folder
 			$return->IMAP = $this->folder($folder,$return->IMAP);
+			$return->Folder = $folder;
 			// Meta Data
 			$return->Meta = imap_mailboxmsginfo($return->IMAP);
 			// Get Messages
@@ -321,11 +322,11 @@ class phpIMAP{
 		$IMAP = null;
 		$ids = [];
 		if(is_object($List)){ $IMAP = $List; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_array($Connection)){ $ids = $Connection; }
-		if(is_array($List)){ $ids = $List; }
+		elseif(is_array($List)){ $ids = $List; }
 		if(is_int($Connection)){ $ids = [$Connection]; }
-		if(is_int($List)){ $ids = [$List]; }
+		elseif(is_int($List)){ $ids = [$List]; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		$messages = [];
 		foreach($ids as $id){
@@ -508,9 +509,9 @@ class phpIMAP{
 		$IMAP = null;
 		$uid = null;
 		if(is_object($ID)){ $IMAP = $ID; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_int($Connection)){ $uid = $Connection; }
-		if(is_int($ID)){ $uid = $ID; }
+		elseif(is_int($ID)){ $uid = $ID; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		// Read Message
 		imap_body($IMAP,$uid,FT_UID);
@@ -520,9 +521,9 @@ class phpIMAP{
 		$IMAP = null;
 		$eml = null;
 		if(is_object($File)){ $IMAP = $File; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_string($Connection)){ $eml = $Connection; }
-		if(is_string($File)){ $eml = $File; }
+		elseif(is_string($File)){ $eml = $File; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		$connection = imap_mailboxmsginfo($IMAP)->Mailbox;
 		if(imap_append($IMAP, $connection, $eml)){
@@ -536,9 +537,9 @@ class phpIMAP{
 		$IMAP = null;
 		$uid = null;
 		if(is_object($ID)){ $IMAP = $ID; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_int($Connection)){ $uid = $Connection; }
-		if(is_int($ID)){ $uid = $ID; }
+		elseif(is_int($ID)){ $uid = $ID; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		// Fetch Email
 		$headers = imap_fetchheader($IMAP, $uid, FT_UID);
@@ -551,9 +552,9 @@ class phpIMAP{
 		$IMAP = null;
 		$uid = null;
 		if(is_object($ID)){ $IMAP = $ID; }
-		if(is_object($Connection)){ $IMAP = $Connection; }
+		elseif(is_object($Connection)){ $IMAP = $Connection; }
 		if(is_int($Connection)){ $uid = $Connection; }
-		if(is_int($ID)){ $uid = $ID; }
+		elseif(is_int($ID)){ $uid = $ID; }
 		if($IMAP == null){ $IMAP = $this->IMAP; }
 		// Delete Email
 		imap_mail_copy($IMAP,$uid,'Trash',FT_UID);
