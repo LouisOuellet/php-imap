@@ -118,7 +118,7 @@ $phpIMAP->close();
 This method is used to fetch a list of emails from an IMAP mailbox. You can supply a mailbox to check or use one stored when using the method connect(). Note that arguments can be interchanged.
 
 ##### Options
-There are 2 options available.
+There are 3 options available.
  * folder: STRING containing the name of the folder to fetch. Default is "INBOX".
  * format: BOOLEAN indicating whether or not to format each retrieved message or not using the format() method. Default is false.
  * filter: STRING containing filters to apply to imap_search(). See [PHP.net](https://www.php.net/manual/en/function.imap-search.php) for the list of available criteria. Default is "ALL".
