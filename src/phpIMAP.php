@@ -383,7 +383,7 @@ class phpIMAP{
 			foreach(explode(' ',$meta) as $string){
 				if(mb_strlen($string)>=3 && (preg_match('~[0-9]+~', $string) || strpos($string, '-') !== false) && substr($string, 0, 1) !== '=' && substr($string, 0, 1) !== '?'){ array_push($msg->Meta->References->Plain,$string);}
 			}
-			$msg->Meta->References->Formatted = $this->mergeReferences($this->getReferences($msg->Subject->PLAIN,"[","]"),':');
+			$msg->Meta->References->Formatted = $this->mergeReferences($this->getReferences(strtoupper($msg->Subject->PLAIN),"[","]"),':');
 			// Handling Body
 			$msg->Body = new stdClass();
 			$msg->Body->Meta = imap_fetchstructure($IMAP,$id);
@@ -437,7 +437,7 @@ class phpIMAP{
 					if(substr($line, 0, 1) != '>'){ $msg->Body->Unquoted .= $line."\n"; }
 				}
 			}
-			if($refs = $this->getReferences($msg->Body->Content,"[","]")){
+			if($refs = $this->getReferences(strtoupper($msg->Body->Content),"[","]")){
 				if(count($refs) > 0){
 					foreach($this->mergeReferences($refs,':') as $type => $references){
 						foreach($references as $reference){
