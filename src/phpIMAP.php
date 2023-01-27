@@ -472,6 +472,14 @@ class phpIMAP{
 							}
 						}
 					}
+					if(isset($msg->Attachments->Files[$key]['is_attachment']) && $msg->Attachments->Files[$key]['is_attachment']){
+						if(str_contains($msg->Attachments->Files[$key]['name'], '=?')){ $msg->Attachments->Files[$key]['name'] = imap_utf8($msg->Attachments->Files[$key]['name']); }
+						if(str_contains($msg->Attachments->Files[$key]['filename'], '=?')){ $msg->Attachments->Files[$key]['filename'] = imap_utf8($msg->Attachments->Files[$key]['filename']); }
+						if(str_contains($msg->Attachments->Files[$key]['name'], '?=')){ $msg->Attachments->Files[$key]['name'] = str_replace('?=','',$msg->Attachments->Files[$key]['name']); }
+						if(str_contains($msg->Attachments->Files[$key]['filename'], '?=')){ $msg->Attachments->Files[$key]['filename'] = str_replace('?=','',$msg->Attachments->Files[$key]['filename']); }
+						$msg->Attachments->Files[$key]['name'] = trim($msg->Attachments->Files[$key]['name']);
+						$msg->Attachments->Files[$key]['filename'] = trim($msg->Attachments->Files[$key]['filename']);
+					}
 					if((isset($msg->Attachments->Files[$key]))&&($msg->Attachments->Files[$key]['is_attachment'])){
 						$msg->Attachments->Count++;
 						$msg->Attachments->Files[$key]['attachment'] = imap_fetchbody($IMAP,$id, $objects['part_number']);
