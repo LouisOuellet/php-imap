@@ -4,17 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05af0e34e757ab46972535d63d179793",
-    "packages": [],
+    "content-hash": "3e927e40595aaaa218d86e712eca7c23",
+    "packages": [
+        {
+            "name": "laswitchtech/php-logger",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LouisOuellet/php-logger.git",
+                "reference": "41d59868c388a8801d99aff7567511b486d1650e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LouisOuellet/php-logger/zipball/41d59868c388a8801d99aff7567511b486d1650e",
+                "reference": "41d59868c388a8801d99aff7567511b486d1650e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LaswitchTech\\phpLogger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Louis Ouellet",
+                    "email": "louis_ouellet@hotmail.com"
+                }
+            ],
+            "description": "Easy to use logging library for PHP",
+            "support": {
+                "issues": "https://github.com/LouisOuellet/php-logger/issues",
+                "source": "https://github.com/LouisOuellet/php-logger/tree/v1.1.0"
+            },
+            "time": "2023-03-15T14:04:22+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {
-        "php": "*"
-    },
+    "platform": [],
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }

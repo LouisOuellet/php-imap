@@ -4,6 +4,8 @@ composer.phar
 *.DS_Store
 /vendor/
 /tmp/
+/data/
+/log/
 example.php
 *.log
 

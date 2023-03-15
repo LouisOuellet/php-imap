@@ -6,12 +6,28 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/LouisOuellet/php-imap?style=for-the-badge)
 ![Version](https://img.shields.io/github/v/release/LouisOuellet/php-imap?label=Version&style=for-the-badge)
 
+## Description
+phpIMAP is a PHP library that provides an easy-to-use interface for interacting with IMAP email servers. It includes two main classes: the Message class and the Attachment class.
+
+The Message class allows you to retrieve and manipulate email messages from an IMAP server. It provides methods for retrieving the message headers, body, and attachments, as well as for marking messages as read or deleted. Additionally, it includes a constructor method that takes an email message as its input and parses it into a Message object.
+
+The Attachment class is used to handle email attachments. It includes methods for identifying the attachment's filename, type, and encoding, as well as for retrieving and saving the attachment's content. This class is typically used in conjunction with the Message class's getAttachments method, which retrieves all attachments associated with a given email message.
+
 ## Features
- - IMAP Authentication
- - Management of IMAP mailbox
+ - Retrieve email messages from IMAP servers
+ - Get details of email messages such as sender, recipient, subject, date, and more
+ - Get the body of email messages in plain text or HTML format
+ - Get attachments from email messages and save them to disk
+ - Delete email messages from the server
+ - Move email messages to different mailboxes on the server
+ - Search for email messages on the server based on various criteria such as sender, recipient, subject, and date
+ - Mark email messages as read or unread on the server
+ - Flag email messages for follow-up on the server
+ - Handle errors and exceptions gracefully with detailed error messages and logging
+ - Customizable logging with phpLogger integration.
 
 ## Why you might need it
-If you are looking for an easy way to authenticate users against an IMAP server or if you are looking to easily manage a mailbox. This PHP Class is for you.
+The library provides a simple and powerful way to work with IMAP email servers in PHP, allowing developers to easily retrieve, manipulate, and store email messages and attachments.
 
 ## Can I use this?
 Sure!
@@ -31,8 +47,8 @@ Using Composer:
 composer require laswitchtech/php-imap
 ```
 
-## How to
-
+## How do I use it?
+### Examples
 ### Initialize
 ```php
 
@@ -43,226 +59,181 @@ use LaswitchTech\IMAP\phpIMAP;
 //Load Composer's autoloader
 require 'vendor/autoload.php';
 
-$phpIMAP = new phpIMAP("imap.domain.com","993","ssl","username@domain.com","password");
+$phpIMAP = new phpIMAP();
+$phpIMAP->connect("username@domain.com","*******************","imap.domain.com","993","ssl");
 ```
 
 ### Methods
 To make it easier, we will assume you have already initialized the class in ```$phpIMAP```.
 
-#### getUsername()
-If the IMAP connection is stored within the class, this method will return the username of the account connected.
-
-##### Example
+#### connect()
+This method creates a connection to an IMAP server.
 ```php
-$phpIMAP->getUsername();
-// Return String or Null
+$phpIMAP->connect("username@domain.com","*******************","imap.domain.com","993","ssl");
 ```
 
-#### getFolders()
-If the IMAP connection is stored within the class, this method will return the list of available folders of the account connected.
-
-##### Example
+#### close()
+This method close an active connection of an IMAP server.
 ```php
-$phpIMAP->getFolders();
-// Return Array or Null
+$phpIMAP->close();
+```
+
+#### login()
+This method allows to test a connection to an IMAP server.
+```php
+$phpIMAP->login("username@domain.com","*******************","imap.domain.com","993","ssl");
 ```
 
 #### isConnected()
-If the IMAP connection is stored within the class, this method will return true if a connection was established to the IMAP server.
-
-##### Example
+This method return a boolean indicating if a connection is currently active or not.
 ```php
-if($phpIMAP->isConnected()){
-  // Connection is Successful
-}
+$phpIMAP->isConnected();
 ```
 
-#### buildConnectionString($host,$port = null,$encryption = null,$isSelfSigned = true)
-This method is used to generate a connection string that imap_open() can read.
-
-##### Example
+#### getFolders()
+This method returns a list of folders available.
 ```php
-$phpIMAP->buildConnectionString("imap.domain.com",993,'ssl');
-// Return String
+$phpIMAP->getFolders();
 ```
 
-#### connect($username = null,$password = null,$connection = null,$store = false)
-This method is used to connect to a mailbox. Additionally a flag can be added to store the connection within the class for reuse.
-
-##### Example
+#### setFolder()
+This method selects a folder.
 ```php
-$phpIMAP->connect("username@domain","password",$phpIMAP->buildConnectionString("imap.domain.com",993,'ssl'));
-// Return IMAP Object
+$phpIMAP->setFolder("INBOX");
 ```
 
-#### login($username,$password,$host = null,$port = null,$encryption = null,$isSelfSigned = true)
-This method is used to test authentication on an IMAP Server.
-
-##### Example
+#### getHost()
+This method returns the host of the active connection.
 ```php
-$phpIMAP->login("username@domain","password","imap.domain.com",993,'ssl');
-// Return BOOLEAN
+$phpIMAP->getHost();
 ```
 
-#### close($IMAP = null)
-If the IMAP connection is stored within the class and $IMAP is Null, this method will close the connection to the IMAP server.
-If an IMAP connection is provided, it method will close the provided connection.
-
-##### Example
+#### getUsername()
+This method returns the username of the active connection.
 ```php
-$phpIMAP->close();
-// Return Null
+$phpIMAP->getUsername();
 ```
 
-#### get($IMAP = null, $Options = [])
-This method is used to fetch a list of emails from an IMAP mailbox. You can supply a mailbox to check or use one stored when using the method connect(). Note that arguments can be interchanged.
+#### addFolder()
 
-##### Options
-There are 3 options available.
- * folder: STRING containing the name of the folder to fetch. Default is "INBOX".
- * format: BOOLEAN indicating whether or not to format each retrieved message or not using the format() method. Default is false.
- * filter: STRING containing filters to apply to imap_search(). See [PHP.net](https://www.php.net/manual/en/function.imap-search.php) for the list of available criteria. Default is "ALL".
+#### deleteFolder()
 
-##### Example without formatting
+#### getMessages()
+This method returns a list of messages in the selected folder.
 ```php
-$object = $phpIMAP->get();
-// Return Object
-var_dump($object->messages);
-// Return Array of Message IDs
+foreach($phpIMAP->getMessages() as $message){}
 ```
 
-##### Example with formatting
+##### getTo()
+This provides all TO addresses of a message.
 ```php
-$object = $phpIMAP->get(['format' => true]);
-// Return Object
-
-var_dump($object->messages);
-// Return Array of Messages Objects
-
-// Handling messages
-end($object->messages)->ID; // ID of the message
-end($object->messages)->UID; // UID of the message
-end($object->messages)->Header; // Complete header information
-end($object->messages)->From; // From email address
-end($object->messages)->Sender; // Sender email address
-end($object->messages)->To; // Array of the To addresses
-end($object->messages)->CC; // Array of the CC addresses
-end($object->messages)->BCC; // Array of the BCC addresses
-end($object->messages)->Subject->Full; // Subject of the message
-end($object->messages)->Subject->PLAIN; // Original subject
-end($object->messages)->Body->Meta; // Message structure
-end($object->messages)->Body->Content; // Message body (HTML if present otherwise plain text)
-end($object->messages)->Body->Unquoted; // Message body without quote
-end($object->messages)->Attachments; // Message attachments stored in an array
-
-// Handling attachments
-end(end($object->messages)->Attachments)['filename']; // filename of attachment
-end(end($object->messages)->Attachments)['name']; // name of attachment
-end(end($object->messages)->Attachments)['bytes']; // size of attachment in bytes
-end(end($object->messages)->Attachments)['attachment']; // content of the attachment already decoded
-end(end($object->messages)->Attachments)['encoding']; // encoding type of the attachment
+$message->getTo();
 ```
 
-##### Example with a specific folder
-If you want to look in a specific folder:
+##### getCc()
+This provides all CC addresses of a message.
 ```php
-$phpIMAP->get(["folder" => "Sent"]);
+$message->getCc();
 ```
 
-#### format($List = [], $IMAP = null)
-This method will format a list of message IDs and is use when the option ```format``` is set in the get() method. Note that you can also provide a single ID to the method to format a single message.
-
-##### Example
+##### getBcc()
+This provides all BCC addresses of a message.
 ```php
-$object = $phpIMAP->get();
-// Return Object
-
-var_dump($object->messages);
-// Return Array of Message IDs
-
-var_dump($phpIMAP->format($object->messages));
-// Return Array of Messages Objects
-
-// Handling messages
-end($object->messages)->ID; // ID of the message
-end($object->messages)->UID; // UID of the message
-end($object->messages)->Header; // Complete header information
-end($object->messages)->From; // From email address
-end($object->messages)->Sender; // Sender email address
-end($object->messages)->To; // Array of the To addresses
-end($object->messages)->CC; // Array of the CC addresses
-end($object->messages)->BCC; // Array of the BCC addresses
-end($object->messages)->Subject->Full; // Subject of the message
-end($object->messages)->Subject->PLAIN; // Original subject
-end($object->messages)->Body->Meta; // Message structure
-end($object->messages)->Body->Content; // Message body (HTML if present otherwise plain text)
-end($object->messages)->Body->Unquoted; // Message body without quote
-end($object->messages)->Attachments; // Message attachments stored in an array
-
-// Handling attachments
-end(end($object->messages)->Attachments)['filename']; // filename of attachment
-end(end($object->messages)->Attachments)['name']; // name of attachment
-end(end($object->messages)->Attachments)['bytes']; // size of attachment in bytes
-end(end($object->messages)->Attachments)['attachment']; // content of the attachment already decoded
-end(end($object->messages)->Attachments)['encoding']; // encoding type of the attachment
+$message->getBcc();
 ```
 
-#### read($UID,$IMAP = null)
-This method simply set the SEEN flag to a message.
-
-##### Example
+##### getSender()
+This provides all SENDER addresses of a message.
 ```php
-$phpIMAP->read(1);
-// Return Null
+$message->getSender();
 ```
 
-#### delete($UID,$IMAP = null)
-This method simply delete a message from the mailbox.
-
-##### Example
+##### getFrom()
+This provides all FROM addresses of a message.
 ```php
-$phpIMAP->delete(1);
-// Return TRUE or DIE Error
+$message->getFrom();
 ```
 
-#### saveEml($eml, $IMAP = null)
-This method save the content of an email to the specified mailbox.
-
-##### Example
+##### getReplyTo()
+This provides all REPLY-TO addresses of a message.
 ```php
-$phpIMAP->saveEml("From: me@example.com\r\n"
-                . "To: you@example.com\r\n"
-                . "Subject: test\r\n"
-                . "\r\n"
-                . "this is a test message, please ignore\r\n");
-// Return BOOLEAN
+$message->getReplyTo();
 ```
 
-#### getEml($UID, $IMAP = null)
-This method retrieves a message and returns a blob. This can be used to save messages as files(.eml).
-
-##### Example
+##### getUid()
+This returns the UID of a message.
 ```php
-$phpIMAP->getEml(1);
-// Return BLOB
+$message->getUid();
 ```
 
-#### folder($folder, $IMAP = null)
-This method is used to change folder within a mailbox.
-
-##### Example
+##### getId()
+This returns the Message-Id of a message.
 ```php
-$phpIMAP->folder('Sent');
-// Return IMAP Object
+$message->getId();
 ```
 
-#### saveAttachment($attachment,$directory)
-This method is to save file attachments into a specified directory.
-
-##### Example
+##### getDate()
+This returns the Date of a message.
 ```php
-foreach(end($phpIMAP->get()->messages)->Attachments as $file){
-  $phpIMAP->saveAttachment($file,"tmp/");
-  // Return STRING containing the path of the file
-}
+$message->getDate();
+```
+
+##### getSubject()
+This returns the Subject of a message.
+```php
+$message->getSubject();
+```
+
+##### getBody()
+This returns the Body of a message. HTML is returned if available, otherwise TEXT is returned.
+```php
+$message->getBody();
+```
+
+##### save()
+This will save a message locally. Returns the file path.
+```php
+$message->save();
+```
+
+##### getAttachments()
+This method returns a list of attachments in the message.
+```php
+foreach($message->getAttachments() as $attachement){}
+```
+
+###### getDisposition()
+This returns the Disposition of an attachment.
+```php
+$message->getDisposition();
+```
+
+###### getFilename()
+This returns the Filename of an attachment.
+```php
+$message->getFilename();
+```
+
+###### getId()
+This returns the Content-Id of an attachment.
+```php
+$message->getId();
+```
+
+###### getEncoding()
+This returns the Encoding of an attachment.
+```php
+$message->getEncoding();
+```
+
+###### getContent()
+This returns the Content of an attachment as a decoded blob of data.
+```php
+$message->getContent();
+```
+
+###### save()
+This will save an attachment locally. Returns the file path.
+```php
+$attachement->save();
 ```
