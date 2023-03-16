@@ -67,6 +67,19 @@ $phpIMAP->connect("username@domain.com","*******************","imap.domain.com",
 To make it easier, we will assume you have already initialized the class in ```$phpIMAP```.
 
 #### phpIMAP
+##### config()
+This method allows you to change some internal configurations such as log level.
+ * 0: No Logging
+ * 1: Error Logging
+ * 2: Warning Logging
+ * 3: Success Logging
+ * 4: Info Logging
+ * 5: Debug Logging
+
+```php
+$phpIMAP->config("level",5);
+```
+
 ##### connect()
 This method creates a connection to an IMAP server.
 ```php

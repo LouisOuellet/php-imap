@@ -17,6 +17,9 @@ class phpIMAP{
 	// Default Data Directory
 	const DataDirectory = 'data/imap';
 
+	// Default Log Prefix
+	const Prefix = 'IMAP';
+
 	// Logger
 	private $Logger;
 	private $Level = 1;
@@ -44,12 +47,7 @@ class phpIMAP{
    * @param  boolean|null  $debug
    * @return void
    */
-	public function __construct($level = 1){
-
-		// Logging Level
-		if(is_int($level)){
-			$this->Level = $level;
-		}
+	public function __construct(){
 
     // Initiate phpLogger
     $this->Logger = new phpLogger(['imap' => 'log/imap.log']);
@@ -68,6 +66,42 @@ class phpIMAP{
 	public function __destruct(){
 		$this->close();
 	}
+
+  /**
+   * Configure Library.
+   *
+   * @param  string  $option
+   * @param  bool|int  $value
+   * @return void
+   * @throws Exception
+   */
+  public function config($option, $value){
+		try {
+			if(is_string($option)){
+	      switch($option){
+	        case"level":
+	          if(is_int($value)){
+
+							// Logging Level
+	            $this->Level = $value;
+
+							// Configure phpLogger
+					    $this->Logger->config('level',$this->Level);
+	          } else{
+	            throw new Exception("2nd argument must be an integer.");
+	          }
+	          break;
+	        default:
+	          throw new Exception("unable to configure $option.");
+	          break;
+	      }
+	    } else{
+	      throw new Exception("1st argument must be as string.");
+	    }
+		} catch (Exception $e) {
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
+		}
+  }
 
   /**
    * Connect to an IMAP Server.
@@ -90,16 +124,16 @@ class phpIMAP{
 			}
 
 			// Debug Information
-			$this->Logger->debug("IMAP Host: {$host}");
-			$this->Logger->debug("IMAP Port: {$port}");
-			$this->Logger->debug("IMAP Encryption: {$encryption}");
-			$this->Logger->debug("IMAP Flag: {$isSelfSigned}");
-			$this->Logger->debug("IMAP Username: {$username}");
-			$this->Logger->debug("IMAP Password: {$password}");
+			$this->Logger->debug(self::Prefix . " Host: {$host}");
+			$this->Logger->debug(self::Prefix . " Port: {$port}");
+			$this->Logger->debug(self::Prefix . " Encryption: {$encryption}");
+			$this->Logger->debug(self::Prefix . " Flag: {$isSelfSigned}");
+			$this->Logger->debug(self::Prefix . " Username: {$username}");
+			$this->Logger->debug(self::Prefix . " Password: {$password}");
 
 			// Build connection string
 			$connectionString = $this->buildConnectionString($host, $port, $encryption, $isSelfSigned);
-			$this->Logger->debug("IMAP Connection String: {$connectionString}");
+			$this->Logger->debug(self::Prefix . " Connection String: {$connectionString}");
 
 			// Connect to IMAP server
 			$Connection = imap_open($connectionString, $username, $password, OP_READONLY, 0);
@@ -119,7 +153,7 @@ class phpIMAP{
 				$this->getFolders();
 
 				// Log Success
-				$this->Logger->success('IMAP connection established');
+				$this->Logger->success(self::Prefix . ' connection established');
 			} else {
 				throw new Exception("Unable to connect to the IMAP server");
 			}
@@ -127,7 +161,7 @@ class phpIMAP{
 			// Return Connection
 			return $Connection;
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 			return false;
 		}
 	}
@@ -157,7 +191,7 @@ class phpIMAP{
 			$this->Folder = null;
 
 			// Log the closing
-			$this->Logger->success("IMAP connection closed");
+			$this->Logger->success(self::Prefix . " connection closed");
 		}
 	}
 
@@ -220,7 +254,7 @@ class phpIMAP{
 			// Return connection string
 			return $connection;
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
 	}
 
@@ -360,12 +394,12 @@ class phpIMAP{
 			$this->Folders = $Folders;
 
 			// Debug Information
-			$this->Logger->debug("IMAP Folders: " . PHP_EOL . json_encode($this->Folders, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+			$this->Logger->debug(self::Prefix . " Folders: " . PHP_EOL . json_encode($this->Folders, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
 			// Return the list of available folders
 			return $this->Folders;
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
 	}
 
@@ -398,11 +432,11 @@ class phpIMAP{
 			$this->Folder = $folder;
 
 			// Debug Information
-			$this->Logger->debug("IMAP Folder set to: {$this->Folder}");
+			$this->Logger->debug(self::Prefix . " Folder set to: {$this->Folder}");
 
 			return true;
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
 	}
 
@@ -430,7 +464,7 @@ class phpIMAP{
 				throw new Exception("Unable to create the folder {$folder}");
 			}
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
 	}
 
@@ -463,7 +497,7 @@ class phpIMAP{
 				throw new Exception("Unable to delete the folder {$folder}");
 			}
 		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
+			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
 	}
 
@@ -537,8 +571,8 @@ class phpIMAP{
     foreach($criteriaList as $key => $searchCriteria){
 
 			// Debug Information
-			$this->Logger->debug("IMAP Criteria Key: {$key}");
-			$this->Logger->debug("IMAP Criteria: {$searchCriteria}");
+			$this->Logger->debug(self::Prefix . " Criteria Key: {$key}");
+			$this->Logger->debug(self::Prefix . " Criteria: {$searchCriteria}");
 
 			// Skip if requested
 			if($skip){
@@ -563,7 +597,7 @@ class phpIMAP{
 				if(substr($criteriaList[$nextKey], 0, 1) === '"' && substr($criteriaList[$nextKey], -1) === '"'){
 					$skip = true;
 				} else {
-					$this->Logger->error("IMAP Error: {$searchCriteria} criteria has to be followed by a filter string.");
+					$this->Logger->error(self::Prefix . " Error: {$searchCriteria} criteria has to be followed by a filter string.");
 					return false;
 				}
       }
@@ -602,13 +636,13 @@ class phpIMAP{
 
 			// Debug Information
 			// Log the Criteria
-			$this->Logger->debug("IMAP Criteria: " . PHP_EOL . json_encode($criteria, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+			$this->Logger->debug(self::Prefix . " Criteria: " . PHP_EOL . json_encode($criteria, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
 			// Mailbox Info
 			$info = imap_mailboxmsginfo($this->Connection);
 
 			// Log the Mailbox Info
-			$this->Logger->debug("IMAP Mailbox Info: " . PHP_EOL . json_encode($info, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+			$this->Logger->debug(self::Prefix . " Mailbox Info: " . PHP_EOL . json_encode($info, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
 			// Search for all messages in the folder
 			$uids = imap_search($this->Connection, $criteria, SE_UID);
@@ -619,7 +653,7 @@ class phpIMAP{
       }
 
 			// Debug Information
-			$this->Logger->debug("IMAP Order Reversed");
+			$this->Logger->debug(self::Prefix . " Order Reversed");
 
       // Retrieve messages
       $messages = [];
@@ -639,14 +673,14 @@ class phpIMAP{
 			}
 
 			// Debug Information
-			$this->Logger->debug("IMAP Messages: " . PHP_EOL . json_encode($messages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+			$this->Logger->debug(self::Prefix . " Messages: " . PHP_EOL . json_encode($messages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
-			$this->Logger->success("IMAP Messages Retrieved");
+			$this->Logger->success(self::Prefix . " Messages Retrieved");
 
       // Return the list of messages
       return $messages;
     } catch (Exception $e) {
-      $this->Logger->error('IMAP Error: '.$e->getMessage());
+      $this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
     }
 	}
 }
