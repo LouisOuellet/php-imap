@@ -66,68 +66,96 @@ $phpIMAP->connect("username@domain.com","*******************","imap.domain.com",
 ### Methods
 To make it easier, we will assume you have already initialized the class in ```$phpIMAP```.
 
-#### connect()
+#### phpIMAP
+##### connect()
 This method creates a connection to an IMAP server.
 ```php
 $phpIMAP->connect("username@domain.com","*******************","imap.domain.com","993","ssl");
 ```
 
-#### close()
+##### close()
 This method close an active connection of an IMAP server.
 ```php
 $phpIMAP->close();
 ```
 
-#### login()
+##### login()
 This method allows to test a connection to an IMAP server.
 ```php
 $phpIMAP->login("username@domain.com","*******************","imap.domain.com","993","ssl");
 ```
 
-#### isConnected()
+##### isConnected()
 This method return a boolean indicating if a connection is currently active or not.
 ```php
 $phpIMAP->isConnected();
 ```
 
-#### getFolders()
-This method returns a list of folders available.
-```php
-$phpIMAP->getFolders();
-```
-
-#### setFolder()
-This method selects a folder.
-```php
-$phpIMAP->setFolder("INBOX");
-```
-
-#### getHost()
-This method returns the host of the active connection.
-```php
-$phpIMAP->getHost();
-```
-
-#### getUsername()
+##### getUsername()
 This method returns the username of the active connection.
 ```php
 $phpIMAP->getUsername();
 ```
 
-#### addFolder()
+##### getHost()
+This method returns the host of the active connection.
+```php
+$phpIMAP->getHost();
+```
 
-#### deleteFolder()
+##### getFolders()
+This method returns a list of folders available.
+```php
+$phpIMAP->getFolders();
+```
 
-#### getMessages()
+##### setFolder()
+This method selects a folder.
+```php
+$phpIMAP->setFolder("INBOX");
+```
+
+##### createFolder()
+This method creates a folder.
+```php
+$phpIMAP->createFolder("New Folder");
+```
+
+##### deleteFolder()
+This method deletes a folder.
+```php
+$phpIMAP->deleteFolder("Old Folder");
+```
+
+##### getMessages()
 This method returns a list of messages in the selected folder.
 ```php
 foreach($phpIMAP->getMessages() as $message){}
 ```
 
+#### Message
 ##### getTo()
 This provides all TO addresses of a message.
 ```php
 $message->getTo();
+```
+
+##### getReplyTo()
+This provides all REPLY-TO addresses of a message.
+```php
+$message->getReplyTo();
+```
+
+##### getFrom()
+This provides all FROM addresses of a message.
+```php
+$message->getFrom();
+```
+
+##### getSender()
+This provides all SENDER addresses of a message.
+```php
+$message->getSender();
 ```
 
 ##### getCc()
@@ -142,24 +170,6 @@ This provides all BCC addresses of a message.
 $message->getBcc();
 ```
 
-##### getSender()
-This provides all SENDER addresses of a message.
-```php
-$message->getSender();
-```
-
-##### getFrom()
-This provides all FROM addresses of a message.
-```php
-$message->getFrom();
-```
-
-##### getReplyTo()
-This provides all REPLY-TO addresses of a message.
-```php
-$message->getReplyTo();
-```
-
 ##### getUid()
 This returns the UID of a message.
 ```php
@@ -172,22 +182,130 @@ This returns the Message-Id of a message.
 $message->getId();
 ```
 
-##### getDate()
-This returns the Date of a message.
-```php
-$message->getDate();
-```
-
 ##### getSubject()
 This returns the Subject of a message.
 ```php
 $message->getSubject();
 ```
 
+##### getDate()
+This returns the Date of a message.
+```php
+$message->getDate();
+```
+
 ##### getBody()
 This returns the Body of a message. HTML is returned if available, otherwise TEXT is returned.
 ```php
 $message->getBody();
+```
+
+##### read()
+Set `Seen` flag on message.
+```php
+$message->read();
+```
+
+##### unread()
+Clear `Seen` flag on message.
+```php
+$message->unread();
+```
+
+##### flag()
+Set `Flagged` flag on message.
+```php
+$message->flag();
+```
+
+##### unflag()
+Clear `Flagged` flag on message.
+```php
+$message->unflag();
+```
+
+##### draft()
+Set `Draft` flag on message.
+```php
+$message->draft();
+```
+
+##### undraft()
+Clear `Draft` flag on message.
+```php
+$message->undraft();
+```
+
+##### answer()
+Set `Answered` flag on message.
+```php
+$message->answer();
+```
+
+##### unanswer()
+Clear `Answered` flag on message.
+```php
+$message->unanswer();
+```
+
+##### size()
+Get the size of the message in bytes.
+```php
+$message->size();
+```
+
+##### isRead()
+Check if the flag `Seen` is set on message.
+```php
+$message->isRead();
+```
+
+##### isFlagged()
+Check if the flag `Flagged` is set on message.
+```php
+$message->isFlagged();
+```
+
+##### isRecent()
+Check if the flag `Recent` is set on message.
+```php
+$message->isRecent();
+```
+
+##### isAnswered()
+Check if the flag `Answered` is set on message.
+```php
+$message->isAnswered();
+```
+
+##### isDraft()
+Check if the flag `Draft` is set on message.
+```php
+$message->isDraft();
+```
+
+##### isDeleted()
+Check if the flag `Deleted` is set on message.
+```php
+$message->isDeleted();
+```
+
+##### delete()
+This will delete the message.
+```php
+$message->delete();
+```
+
+##### copy()
+Copy this message to a different folder.
+```php
+$message->copy("New Folder");
+```
+
+##### move()
+Move this message to a different folder.
+```php
+$message->move("New Folder");
 ```
 
 ##### save()
@@ -202,37 +320,44 @@ This method returns a list of attachments in the message.
 foreach($message->getAttachments() as $attachement){}
 ```
 
-###### getDisposition()
+#### Attachement
+##### getDisposition()
 This returns the Disposition of an attachment.
 ```php
 $message->getDisposition();
 ```
 
-###### getFilename()
-This returns the Filename of an attachment.
-```php
-$message->getFilename();
-```
-
-###### getId()
-This returns the Content-Id of an attachment.
-```php
-$message->getId();
-```
-
-###### getEncoding()
+##### getEncoding()
 This returns the Encoding of an attachment.
 ```php
 $message->getEncoding();
 ```
 
-###### getContent()
+##### getId()
+This returns the Content-Id of an attachment.
+```php
+$message->getId();
+```
+
+##### getFilename()
+This returns the Filename of an attachment.
+```php
+$message->getFilename();
+```
+
+##### getFiletype()
+This returns the Filetype of an attachment.
+```php
+$message->getFiletype();
+```
+
+##### getContent()
 This returns the Content of an attachment as a decoded blob of data.
 ```php
 $message->getContent();
 ```
 
-###### save()
+##### save()
 This will save an attachment locally. Returns the file path.
 ```php
 $attachement->save();

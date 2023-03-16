@@ -407,6 +407,67 @@ class phpIMAP{
 	}
 
 	/**
+	 * Create a folder inside the mailbox.
+	 *
+	 * @param  string  $folder
+	 * @return boolean|void
+	 * @throws Exception
+	 */
+	public function createFolder($folder){
+		try {
+
+      // Check if a connection was established
+      if (!$this->isConnected()) {
+        throw new Exception("No connection are established");
+      }
+
+			// Create the folder
+			if(imap_createmailbox($this->Connection, imap_utf7_encode($folder))){
+
+				// Return True
+				return true;
+			} else {
+				throw new Exception("Unable to create the folder {$folder}");
+			}
+		} catch (Exception $e) {
+			$this->Logger->error('IMAP Error: '.$e->getMessage());
+		}
+	}
+
+	/**
+	 * Delete a folder inside the mailbox.
+	 *
+	 * @param  string  $folder
+	 * @return boolean|void
+	 * @throws Exception
+	 */
+	public function deleteFolder($folder){
+		try {
+
+      // Check if a connection was established
+      if (!$this->isConnected()) {
+        throw new Exception("No connection are established");
+      }
+
+			// Validate the folder
+			if (!in_array($folder,$this->getFolders())) {
+				throw new Exception("The folder {$folder} does not exist.");
+			}
+
+			// Create the folder
+			if(imap_deletemailbox($this->Connection, imap_utf7_encode($folder))){
+
+				// Return True
+				return true;
+			} else {
+				throw new Exception("Unable to delete the folder {$folder}");
+			}
+		} catch (Exception $e) {
+			$this->Logger->error('IMAP Error: '.$e->getMessage());
+		}
+	}
+
+	/**
 	 * Validate the search criteria.
 	 *
 	 * @param string|null $criteria

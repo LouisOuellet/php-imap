@@ -464,6 +464,26 @@ class Message{
 	}
 
 	/**
+	 * Get the uid of a message.
+	 *
+	 * @return string|void
+	 */
+	public function getUid(){
+
+    // Check if message id was already retrieved
+    if($this->UID){
+
+      // Debug Information
+      $this->Logger->debug("IMAP Message UID: {$this->UID}");
+
+      // Return Uid
+      return $this->UID;
+    } else {
+      throw new Exception("Unable to retrieve the message uid");
+    }
+	}
+
+	/**
 	 * Get the id of a message.
 	 *
 	 * @return string|void
@@ -589,26 +609,6 @@ class Message{
       } else {
         throw new Exception("Unable to retrieve the message date");
       }
-    }
-	}
-
-	/**
-	 * Get the uid of a message.
-	 *
-	 * @return string|void
-	 */
-	public function getUid(){
-
-    // Check if message id was already retrieved
-    if($this->UID){
-
-      // Debug Information
-      $this->Logger->debug("IMAP Message UID: {$this->UID}");
-
-      // Return Uid
-      return $this->UID;
-    } else {
-      throw new Exception("Unable to retrieve the message uid");
     }
 	}
 
@@ -810,52 +810,6 @@ class Message{
 	}
 
 	/**
-	 * Retrieve the attachments of a message.
-	 *
-	 * @return string|null
-	 * @throws Exception
-	 */
-	public function getAttachments() {
-		try{
-
-			// Initialize $files
-			$files = [];
-
-			// Find Message Parts
-			$parts = $this->getParts($this->Message);
-
-			// Identify the files
-			foreach($parts as $key => $part){
-
-				// Check if it's a file
-				if(preg_match('/Content-Disposition: "?(.*?)"?(\s|$)/i', $part, $dispositions)){
-					if(isset($dispositions[1])){
-						$disposition = trim($dispositions[1]);
-						$disposition = trim($disposition,';');
-						$disposition = trim($disposition);
-
-						// If it's a file
-						if(in_array($disposition,["attachment","inline"])){
-
-              // Save it
-              $directory = $this->Directory . DIRECTORY_SEPARATOR . $this->getUid();
-              $files[] = new Attachment($part, $this->Connection, $this->Logger, $directory);
-						}
-					}
-				}
-			}
-
-			// Debug Information
-			$this->Logger->debug("files: " . PHP_EOL . json_encode($files, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-
-			// Return $files
-			return $files;
-		} catch (Exception $e) {
-			$this->Logger->error('IMAP Error: '.$e->getMessage());
-		}
-	}
-
-	/**
 	 * Get Overview of message.
 	 *
 	 * @param  boolean  $refresh
@@ -913,7 +867,7 @@ class Message{
 	 * @return bool Returns true on success, false on failure.
 	 * @throws Exception
 	 */
-	public function setFlag($flag) {
+	private function setFlag($flag) {
 		try {
 
       // Validate Flag
@@ -938,7 +892,7 @@ class Message{
 	 * @return bool Returns true on success, false on failure.
 	 * @throws Exception
 	 */
-	public function clearFlag($flag) {
+	private function clearFlag($flag) {
 		try {
 
       // Validate Flag
@@ -1242,5 +1196,51 @@ class Message{
       $this->Logger->error('IMAP Error: '.$e->getMessage());
       return false;
 	  }
+	}
+
+	/**
+	 * Retrieve the attachments of a message.
+	 *
+	 * @return string|null
+	 * @throws Exception
+	 */
+	public function getAttachments() {
+		try{
+
+			// Initialize $files
+			$files = [];
+
+			// Find Message Parts
+			$parts = $this->getParts($this->Message);
+
+			// Identify the files
+			foreach($parts as $key => $part){
+
+				// Check if it's a file
+				if(preg_match('/Content-Disposition: "?(.*?)"?(\s|$)/i', $part, $dispositions)){
+					if(isset($dispositions[1])){
+						$disposition = trim($dispositions[1]);
+						$disposition = trim($disposition,';');
+						$disposition = trim($disposition);
+
+						// If it's a file
+						if(in_array($disposition,["attachment","inline"])){
+
+              // Save it
+              $directory = $this->Directory . DIRECTORY_SEPARATOR . $this->getUid();
+              $files[] = new Attachment($part, $this->Connection, $this->Logger, $directory);
+						}
+					}
+				}
+			}
+
+			// Debug Information
+			$this->Logger->debug("files: " . PHP_EOL . json_encode($files, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
+			// Return $files
+			return $files;
+		} catch (Exception $e) {
+			$this->Logger->error('IMAP Error: '.$e->getMessage());
+		}
 	}
 }
