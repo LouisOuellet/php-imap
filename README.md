@@ -52,7 +52,7 @@ composer require laswitchtech/php-imap
 ### Initialize
 ```php
 
-//Import SMTP class into the global namespace
+//Import IMAP class into the global namespace
 //These must be at the top of your script, not inside a function
 use LaswitchTech\IMAP\phpIMAP;
 
