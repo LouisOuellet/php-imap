@@ -6,6 +6,9 @@ namespace LaswitchTech\IMAP;
 //Import phpLogger class into the global namespace
 use LaswitchTech\phpLogger\phpLogger;
 
+//Import phpNet class into the global namespace
+use LaswitchTech\phpNet\phpNet;
+
 //Import Message class into the global namespace
 use LaswitchTech\IMAP\Message;
 
@@ -23,6 +26,9 @@ class phpIMAP{
 	// Logger
 	private $Logger;
 	private $Level = 1;
+
+	// NetTools
+	private $NetTools;
 
 	// Saved Connection
 	private $Connection = null;
@@ -56,6 +62,12 @@ class phpIMAP{
     $this->Logger->config('ip',true);
     $this->Logger->config('rotation',false);
     $this->Logger->config('level',$this->Level);
+
+    // Initiate phpNet
+    $this->NetTools = new phpNet();
+
+    // Configure phpNet
+    $this->NetTools->config('level',$this->Level);
 	}
 
   /**
@@ -87,6 +99,9 @@ class phpIMAP{
 
 							// Configure phpLogger
 					    $this->Logger->config('level',$this->Level);
+
+							// Configure phpNet
+              $this->NetTools->config('level',$this->Level);
 	          } else{
 	            throw new Exception("2nd argument must be an integer.");
 	          }
@@ -122,6 +137,11 @@ class phpIMAP{
 			if ($this->Connection) {
 				return $this->Connection;
 			}
+
+      // Checking for an open port
+      if(!$this->NetTools->scan($host,$port)){
+        throw new Exception("IMAP port on {$host} is closed or blocked.");
+      }
 
 			// Debug Information
 			$this->Logger->debug(self::Prefix . " Host: {$host}");

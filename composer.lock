@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e927e40595aaaa218d86e712eca7c23",
+    "content-hash": "6c234d6ba116485474a9243213a9be23",
     "packages": [
         {
             "name": "laswitchtech/php-logger",
@@ -42,6 +42,46 @@
                 "source": "https://github.com/LouisOuellet/php-logger/tree/v1.1.1"
             },
             "time": "2023-03-15T23:27:46+00:00"
+        },
+        {
+            "name": "laswitchtech/php-net",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LouisOuellet/php-net.git",
+                "reference": "4cb43d3e7505126f7b8e5ab53207950a6f21f9e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/4cb43d3e7505126f7b8e5ab53207950a6f21f9e0",
+                "reference": "4cb43d3e7505126f7b8e5ab53207950a6f21f9e0",
+                "shasum": ""
+            },
+            "require": {
+                "laswitchtech/php-logger": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LaswitchTech\\phpNet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Louis Ouellet",
+                    "email": "louis_ouellet@hotmail.com"
+                }
+            ],
+            "description": "Network Tools Library for PHP",
+            "support": {
+                "issues": "https://github.com/LouisOuellet/php-net/issues",
+                "source": "https://github.com/LouisOuellet/php-net/tree/v1.0.1"
+            },
+            "time": "2023-03-16T16:56:50+00:00"
         }
     ],
     "packages-dev": [],
