@@ -364,8 +364,14 @@ This returns the Filetype of an attachment.
 $attachment->getFiletype();
 ```
 
+##### getContentType()
+This returns the Content-Type of an attachment.
+```php
+$attachment->getContentType();
+```
+
 ##### getContent()
-This returns the Content of an attachment as a decoded blob of data.
+This returns the Content of an attachment as a blob of data. It will also decode the data if an encoding is found.
 ```php
 $attachment->getContent();
 ```

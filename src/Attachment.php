@@ -28,6 +28,7 @@ class Attachment{
 	private $Encoding = null;
 	private $Id = null;
 	private $Content = null;
+	private $ContentType = null;
 
 	// Data Directory
 	private $Directory = self::DataDirectory;
@@ -195,15 +196,33 @@ class Attachment{
       return $this->Filename;
 		} else {
 			try{
+
+				// Initialize FileName
+				$filename = null;
+
 				// Find file's filename
-				if(preg_match('/filename="?(.*?)"?(\s|$)/i', $this->Attachment, $filenames)){
+				if(!$filename && preg_match('/filename="(.*?)"/', $this->Attachment, $filenames)){
 					if(isset($filenames[1])){
 						$filename = trim($filenames[1]);
 					}
 				}
 
 				// Find file's filename
-				if(preg_match('/name="?(.*?)"?(\s|$)/i', $this->Attachment, $filenames)){
+				if(!$filename && preg_match('/name="(.*?)"/', $this->Attachment, $filenames)){
+					if(isset($filenames[1])){
+						$filename = trim($filenames[1]);
+					}
+				}
+
+				// Find file's filename
+				if(!$filename && preg_match('/filename="?(.*?)"?(\s|$)/i', $this->Attachment, $filenames)){
+					if(isset($filenames[1])){
+						$filename = trim($filenames[1]);
+					}
+				}
+
+				// Find file's filename
+				if(!$filename && preg_match('/name="?(.*?)"?(\s|$)/i', $this->Attachment, $filenames)){
 					if(isset($filenames[1])){
 						$filename = trim($filenames[1]);
 					}
@@ -271,6 +290,51 @@ class Attachment{
 	}
 
 	/**
+	 * Identify the Content-Type of this attachement.
+	 *
+	 * @return string|void
+   * @throws Exception
+	 */
+	public function getContentType(){
+
+    // Check if ContentType was already retrieved
+    if($this->ContentType){
+
+      // Return Id
+      return $this->ContentType;
+		} else {
+			try{
+				if(preg_match('/Content-Type: "?(.*?)"?(\s|$)/i', $this->Attachment, $results)){
+					if(isset($results[1])){
+
+						// Sanitize Result
+						$result = trim($results[1]);
+						$result = trim($result,';');
+						$result = trim($result);
+
+						// Debug Information
+						$this->Logger->debug("ContentType: {$result}");
+
+						// Save ContentType
+						$this->ContentType = $result;
+
+						// Return Id
+						return $this->ContentType;
+					} else {
+						throw new Exception("Could not identify the ContentType of the attachement");
+					}
+				} else {
+					throw new Exception("Unable to retrieve the ContentType of the attachement");
+				}
+			} catch (Exception $e) {
+
+				// Log error
+				$this->Logger->error('IMAP Error: '.$e->getMessage());
+			}
+		}
+	}
+
+	/**
 	 * Identify the content of this attachement.
 	 *
 	 * @return blob|void
@@ -285,34 +349,62 @@ class Attachment{
       return $this->Content;
 		} else {
 			try{
+
+				// Debug Information
+				$this->Logger->debug("Attachment: " . PHP_EOL . json_encode($this->Attachment, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
 				// Split the message into an array of lines
 				$sections = preg_split('/\r\n\r\n|\n\n/', $this->Attachment);
 
 				// Find the content
 				if(isset($sections[1])){
-					$content = $sections[1];
+
+					// Remove Attachment Headers
+					unset($sections[0]);
+
+					// Construct Content
+					$content = implode("\r\n\r\n",$sections);
+
+					// Verify Content-Type
+					switch($this->getContentType()){
+						case"text/plain":
+						case"text/html":
+						case"multipart/alternative":
+						case"multipart/mixed":
+						case"multipart/related":
+						case"message/rfc822":
+						case"application/octet-stream":
+						case"application/pdf":
+						case"image/jpeg":
+						case"image/png":
+						case"audio/mpeg":
+						case"video/mp4":
+							break;
+						default:
+							break;
+					}
+
+					// Check for Encoding
+					switch($this->getEncoding()){
+						case"base64":
+							// Attempt Decoding
+							$content = base64_decode($content, true);
+							if(!$content){
+								throw new Exception("An error occured while decoding the content of the attachement");
+							}
+							break;
+						default:
+							break;
+					}
 
 					// Debug Information
-					$this->Logger->debug("encoded content: {$content}");
+					$this->Logger->debug("content: {$content}");
 
-					// Check for encoding
-					if($this->getEncoding() === "base64"){
-						if($content = base64_decode($content, true)){
+					// Save Content
+					$this->Content = $content;
 
-							// Debug Information
-							$this->Logger->debug("decoded content: {$content}");
-
-							// Save Content
-							$this->Content = $content;
-
-							// Return Content
-							return $this->Content;
-						} else {
-							throw new Exception("An error occured while decoding the content of the attachement");
-						}
-					} else {
-						throw new Exception("Unable to decode the content of the attachement");
-					}
+					// Return Content
+					return $this->Content;
 				} else {
 					throw new Exception("Unable to retrieve the content of the attachement");
 				}
