@@ -317,48 +317,48 @@ $message->save();
 ##### getAttachments()
 This method returns a list of attachments in the message.
 ```php
-foreach($message->getAttachments() as $attachement){}
+foreach($message->getAttachments() as $attachment){}
 ```
 
-#### Attachement
+#### Attachment
 ##### getDisposition()
 This returns the Disposition of an attachment.
 ```php
-$message->getDisposition();
+$attachment->getDisposition();
 ```
 
 ##### getEncoding()
 This returns the Encoding of an attachment.
 ```php
-$message->getEncoding();
+$attachment->getEncoding();
 ```
 
 ##### getId()
 This returns the Content-Id of an attachment.
 ```php
-$message->getId();
+$attachment->getId();
 ```
 
 ##### getFilename()
 This returns the Filename of an attachment.
 ```php
-$message->getFilename();
+$attachment->getFilename();
 ```
 
 ##### getFiletype()
 This returns the Filetype of an attachment.
 ```php
-$message->getFiletype();
+$attachment->getFiletype();
 ```
 
 ##### getContent()
 This returns the Content of an attachment as a decoded blob of data.
 ```php
-$message->getContent();
+$attachment->getContent();
 ```
 
 ##### save()
 This will save an attachment locally. Returns the file path.
 ```php
-$attachement->save();
+$attachment->save();
 ```
