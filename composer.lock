@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "laswitchtech/php-logger",
-            "version": "v1.1.1",
+            "version": "v1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-logger.git",
-                "reference": "aaa17f96dc0529bbcd1a51c2d9f30d16f75af254"
+                "reference": "711d6e90c727cca938cb7395f24f18d47f3a6f09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-logger/zipball/aaa17f96dc0529bbcd1a51c2d9f30d16f75af254",
-                "reference": "aaa17f96dc0529bbcd1a51c2d9f30d16f75af254",
+                "url": "https://api.github.com/repos/LouisOuellet/php-logger/zipball/711d6e90c727cca938cb7395f24f18d47f3a6f09",
+                "reference": "711d6e90c727cca938cb7395f24f18d47f3a6f09",
                 "shasum": ""
             },
             "type": "library",
@@ -39,22 +39,22 @@
             "description": "Easy to use logging library for PHP",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-logger/issues",
-                "source": "https://github.com/LouisOuellet/php-logger/tree/v1.1.1"
+                "source": "https://github.com/LouisOuellet/php-logger/tree/v1.1.3"
             },
-            "time": "2023-03-15T23:27:46+00:00"
+            "time": "2023-03-20T12:34:16+00:00"
         },
         {
             "name": "laswitchtech/php-net",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-net.git",
-                "reference": "4cb43d3e7505126f7b8e5ab53207950a6f21f9e0"
+                "reference": "e9460aab452c1c2b06ac7c035efb8a8393ff1861"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/4cb43d3e7505126f7b8e5ab53207950a6f21f9e0",
-                "reference": "4cb43d3e7505126f7b8e5ab53207950a6f21f9e0",
+                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/e9460aab452c1c2b06ac7c035efb8a8393ff1861",
+                "reference": "e9460aab452c1c2b06ac7c035efb8a8393ff1861",
                 "shasum": ""
             },
             "require": {
@@ -79,9 +79,9 @@
             "description": "Network Tools Library for PHP",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-net/issues",
-                "source": "https://github.com/LouisOuellet/php-net/tree/v1.0.1"
+                "source": "https://github.com/LouisOuellet/php-net/tree/v1.0.2"
             },
-            "time": "2023-03-16T16:56:50+00:00"
+            "time": "2023-03-20T12:36:24+00:00"
         }
     ],
     "packages-dev": [],

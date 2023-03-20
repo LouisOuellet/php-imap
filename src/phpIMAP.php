@@ -116,6 +116,8 @@ class phpIMAP{
 		} catch (Exception $e) {
 			$this->Logger->error(self::Prefix . ' Error: '.$e->getMessage());
 		}
+
+    return $this;
   }
 
   /**
