@@ -3,6 +3,9 @@
 //Declaring namespace
 namespace LaswitchTech\IMAP;
 
+//Import phpConfigurator class into the global namespace
+use LaswitchTech\phpConfigurator\phpConfigurator;
+
 //Import phpLogger class into the global namespace
 use LaswitchTech\phpLogger\phpLogger;
 
@@ -26,6 +29,9 @@ class phpIMAP{
 	// Logger
 	private $Logger;
 	private $Level = 1;
+
+  // Configurator
+  private $Configurator = null;
 
 	// NetTools
 	private $NetTools;
@@ -55,19 +61,17 @@ class phpIMAP{
    */
 	public function __construct(){
 
-    // Initiate phpLogger
-    $this->Logger = new phpLogger(['imap' => 'log/imap.log']);
+    // Initialize Configurator
+    $this->Configurator = new phpConfigurator('imap');
 
-    // Configure phpLogger
-    $this->Logger->config('ip',true);
-    $this->Logger->config('rotation',false);
-    $this->Logger->config('level',$this->Level);
+    // Retrieve Log Level
+    $this->Level = $this->Configurator->get('logger', 'level') ?: $this->Level;
+
+    // Initiate phpLogger
+    $this->Logger = new phpLogger('imap');
 
     // Initiate phpNet
     $this->NetTools = new phpNet();
-
-    // Configure phpNet
-    $this->NetTools->config('level',$this->Level);
 	}
 
   /**
