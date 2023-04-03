@@ -85,16 +85,16 @@
         },
         {
             "name": "laswitchtech/php-net",
-            "version": "v1.1.4",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-net.git",
-                "reference": "21250424703a2e983cd37b5b45343e26534fd872"
+                "reference": "489901d0f56a0681997d55e7b11400917d933992"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/21250424703a2e983cd37b5b45343e26534fd872",
-                "reference": "21250424703a2e983cd37b5b45343e26534fd872",
+                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/489901d0f56a0681997d55e7b11400917d933992",
+                "reference": "489901d0f56a0681997d55e7b11400917d933992",
                 "shasum": ""
             },
             "require": {
@@ -119,9 +119,9 @@
             "description": "Network Tools Library for PHP",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-net/issues",
-                "source": "https://github.com/LouisOuellet/php-net/tree/v1.1.4"
+                "source": "https://github.com/LouisOuellet/php-net/tree/v1.1.5"
             },
-            "time": "2023-03-30T20:11:27+00:00"
+            "time": "2023-04-03T16:52:44+00:00"
         }
     ],
     "packages-dev": [],
