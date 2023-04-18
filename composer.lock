@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "laswitchtech/php-configurator",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-configurator.git",
-                "reference": "d8be4b6af351049584005adafa2c6dacb8548731"
+                "reference": "d507954eff978e6516a224b808cd1f7a7b504fb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-configurator/zipball/d8be4b6af351049584005adafa2c6dacb8548731",
-                "reference": "d8be4b6af351049584005adafa2c6dacb8548731",
+                "url": "https://api.github.com/repos/LouisOuellet/php-configurator/zipball/d507954eff978e6516a224b808cd1f7a7b504fb2",
+                "reference": "d507954eff978e6516a224b808cd1f7a7b504fb2",
                 "shasum": ""
             },
             "type": "library",
@@ -39,22 +39,22 @@
             "description": "Configurator Library for PHP Applications",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-configurator/issues",
-                "source": "https://github.com/LouisOuellet/php-configurator/tree/v1.0.2"
+                "source": "https://github.com/LouisOuellet/php-configurator/tree/v1.0.3"
             },
-            "time": "2023-04-11T16:26:43+00:00"
+            "time": "2023-04-18T13:57:45+00:00"
         },
         {
             "name": "laswitchtech/php-logger",
-            "version": "v1.2.6",
+            "version": "v1.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-logger.git",
-                "reference": "606a8aebf7e3b5405b01865b423ee3142c42d25c"
+                "reference": "e04129e68fe39648c2725252f85a62cf8888ae3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-logger/zipball/606a8aebf7e3b5405b01865b423ee3142c42d25c",
-                "reference": "606a8aebf7e3b5405b01865b423ee3142c42d25c",
+                "url": "https://api.github.com/repos/LouisOuellet/php-logger/zipball/e04129e68fe39648c2725252f85a62cf8888ae3c",
+                "reference": "e04129e68fe39648c2725252f85a62cf8888ae3c",
                 "shasum": ""
             },
             "require": {
@@ -79,22 +79,22 @@
             "description": "Easy to use logging library for PHP",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-logger/issues",
-                "source": "https://github.com/LouisOuellet/php-logger/tree/v1.2.6"
+                "source": "https://github.com/LouisOuellet/php-logger/tree/v1.2.7"
             },
-            "time": "2023-04-11T16:27:57+00:00"
+            "time": "2023-04-18T13:59:02+00:00"
         },
         {
             "name": "laswitchtech/php-net",
-            "version": "v1.1.6",
+            "version": "v1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LouisOuellet/php-net.git",
-                "reference": "874177543f25f2b710296e0e57a1ff6106ce7f0d"
+                "reference": "6e726aabd3cc9042f1cd1ae954f3baaa5ae64d40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/874177543f25f2b710296e0e57a1ff6106ce7f0d",
-                "reference": "874177543f25f2b710296e0e57a1ff6106ce7f0d",
+                "url": "https://api.github.com/repos/LouisOuellet/php-net/zipball/6e726aabd3cc9042f1cd1ae954f3baaa5ae64d40",
+                "reference": "6e726aabd3cc9042f1cd1ae954f3baaa5ae64d40",
                 "shasum": ""
             },
             "require": {
@@ -119,9 +119,9 @@
             "description": "Network Tools Library for PHP",
             "support": {
                 "issues": "https://github.com/LouisOuellet/php-net/issues",
-                "source": "https://github.com/LouisOuellet/php-net/tree/v1.1.6"
+                "source": "https://github.com/LouisOuellet/php-net/tree/v1.1.7"
             },
-            "time": "2023-04-11T16:28:33+00:00"
+            "time": "2023-04-18T13:59:47+00:00"
         }
     ],
     "packages-dev": [],
